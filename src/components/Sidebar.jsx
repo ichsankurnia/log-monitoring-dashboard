@@ -20,6 +20,7 @@ import {
 } from '@ant-design/icons';
 
 import SubMenu from 'antd/lib/menu/SubMenu';
+import { Link } from 'react-router-dom';
 
 
 class Sidebar extends Component {
@@ -41,29 +42,45 @@ class Sidebar extends Component {
         return (
             <Menu
                 onClick={this.handleClick}
-                defaultOpenKeys={['sub2']}
+                defaultOpenKeys={['datalog']}
                 defaultSelectedKeys={['log']}
                 mode="inline"
             >
                 <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
-                    Dashboard
+                    <Link to="/">
+                        Dashboard
+                    </Link>
                 </Menu.Item>
                 <SubMenu key="admin" icon={<MenuOutlined />} title="Admin Configuration">
-                    <Menu.Item key="user" icon={<UserOutlined />}>Data User</Menu.Item>
+                    <Menu.Item key="user" icon={<UserOutlined />}>
+                        <Link to="/admin/data-user">Data User</Link>
+                    </Menu.Item>
                     <Menu.ItemGroup key="g1" title="Item 1">
-                        <Menu.Item key="1" icon={<SettingOutlined />}>Data Perangkat</Menu.Item>
-                        <Menu.Item key="2" icon={<GoldOutlined />}>Data Part</Menu.Item>
+                        <Menu.Item key="dataPerangkat" icon={<SettingOutlined />}>
+                            <Link to="/admin/data-perangkat">Data Perangkat</Link>
+                        </Menu.Item>
+                        <Menu.Item key="dataPart" icon={<GoldOutlined />}>
+                            <Link to="/admin/data-part">Data Part</Link>
+                        </Menu.Item>
                     </Menu.ItemGroup>
                     <Menu.ItemGroup key="g2" title="Item 2">
-                        <Menu.Item key="3" icon={<BugOutlined />}>Data Penyebab</Menu.Item>
-                        <Menu.Item key="4" icon={<CheckCircleOutlined />}>Data Solusi</Menu.Item>
+                        <Menu.Item key="dataPenyebab" icon={<BugOutlined />}>
+                            <Link to="/admin/data-penyebab">Data Penyebab</Link>
+                        </Menu.Item>
+                        <Menu.Item key="dataSolusi" icon={<CheckCircleOutlined />}>
+                            <Link to="/admin/data-solusi">Data Solusi</Link>
+                        </Menu.Item>
                     </Menu.ItemGroup>
                     <Menu.ItemGroup key="g3" title="Item 3">
-                        <Menu.Item key="3" icon={<FundProjectionScreenOutlined />}>Data Project</Menu.Item>
-                        <Menu.Item key="4" icon={<AimOutlined />}>Data Lokasi</Menu.Item>
+                        <Menu.Item key="dataProject" icon={<FundProjectionScreenOutlined />}>
+                            <Link to="/admin/data-project">Data Project</Link>
+                        </Menu.Item>
+                        <Menu.Item key="dataLokasi" icon={<AimOutlined />}>
+                            <Link to="/admin/data-lokasi">Data Lokasi</Link>
+                        </Menu.Item>
                     </Menu.ItemGroup>
                 </SubMenu>
-                <SubMenu key="log" icon={<AppstoreOutlined />} title="Data Log">
+                <SubMenu key="datalog" icon={<AppstoreOutlined />} title="Data Log">
                     <Menu.Item key="log" icon={<DatabaseOutlined />}>Log</Menu.Item>
                     <SubMenu key="export" title="Export" icon={<ExportOutlined />}>
                         <Menu.Item key="expDocumentation" icon={<VideoCameraOutlined />}>Dokumentasi</Menu.Item>
@@ -77,7 +94,7 @@ class Sidebar extends Component {
                     </SubMenu>
                 </SubMenu>
                 <Menu.Item key="logout" icon={<LogoutOutlined />}>
-                    Logout
+                    <Link to="/login">Logout</Link>
                 </Menu.Item>
             </Menu>
         // return (
