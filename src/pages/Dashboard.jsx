@@ -27,7 +27,7 @@ const Dashboard = () => {
                                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                                 <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
                             </Breadcrumb>
-                            <div style={{background: '#fff', padding: 24, minHeight: '75vh'}}>
+                            <div style={{background: '#fff', height: '90vh'}}>
                                 <Switch>
                                     {routes.map((route, index) => (
                                         <Route 
@@ -40,7 +40,7 @@ const Dashboard = () => {
                                 </Switch>
                             </div>
                         </Content>
-                        <Footer style={{textAlign: 'center'}}>Ant Design ©2021 Created by ichsankurnia</Footer>
+                        <Footer style={{textAlign: 'center', height: '9vh'}}>Ant Design ©2021 Created by ichsankurnia</Footer>
                     </Layout>
                 </Layout>
             </Layout>
