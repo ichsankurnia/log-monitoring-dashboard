@@ -43,7 +43,7 @@ const routes = [
         component: DataLokasi
     },
     {
-        path : "*",
+        path : "/*",
         component: NoMatch404
     }
 ]
