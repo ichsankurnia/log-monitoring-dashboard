@@ -20,14 +20,18 @@ import {
 } from '@ant-design/icons';
 
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 
 class Sidebar extends Component {
-    state = {
-        collapsed: false,
-    };
-
+    constructor(props){
+        super(props)
+        
+        this.state = {
+            collapsed: false,
+        };
+    }
+    
     toggleCollapsed = () => {
         this.setState({
             collapsed: !this.state.collapsed,
@@ -37,6 +41,11 @@ class Sidebar extends Component {
     handleClick = e => {
         console.log('click ', e);
     };
+
+    handleLogout = () => {
+        // this.props.history.push('/auth')
+        window.location.reload()
+    }
 
     render() {
         return (
@@ -93,8 +102,9 @@ class Sidebar extends Component {
                         <Menu.Item key="perPerangkat">Per Perangkat</Menu.Item>
                     </SubMenu>
                 </SubMenu>
-                <Menu.Item key="logout" icon={<LogoutOutlined />}>
-                    <Link to="/login">Logout</Link>
+                <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={this.handleLogout}>
+                    <Link to="/auth">Logout</Link>
+                    {/* Logout */}
                 </Menu.Item>
             </Menu>
         // return (
@@ -138,4 +148,4 @@ class Sidebar extends Component {
     }
 }
 
-export default Sidebar
+export default withRouter(Sidebar)
