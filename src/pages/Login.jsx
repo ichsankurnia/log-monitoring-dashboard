@@ -1,9 +1,14 @@
 import { Form, Input, Button } from 'antd';
 import Layout from 'antd/lib/layout/layout';
+import { useHistory, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
+    const history = useHistory()
+    
     const onFinish = (values) => {
         console.log('Success:', values);
+        history.push('/')
       };
     
       const onFinishFailed = (errorInfo) => {
@@ -36,7 +41,7 @@ const Login = () => {
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={{width: '100%', height: 40, marginTop: 10}}>
-                        Submit
+                        <Link to="/">Submit</Link>
                     </Button>
                 </Form.Item>
             </Form>
