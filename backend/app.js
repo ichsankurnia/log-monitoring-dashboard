@@ -2,8 +2,11 @@ const app = require("express")();
 const httpServer = require("http").createServer(app);
 const cors = require('cors')
 const bodyParser = require('body-parser');
+
 const { getUser, getTroubleET, insetTroubleET } = require("./db");
 const route = require("./routes");
+const socketRequest = require("./routes/socket-routes");
+
 require('dotenv').config()
 
 const io = require("socket.io")(httpServer, {
@@ -16,6 +19,32 @@ const PORT = process.env.PORT || 1212
 //#region SOCKET EVENT
 io.on("connection", (socket) => {
     // ...
+    console.log(`a client connected, socket : ${socket.id} ${JSON.stringify(socket.handshake.query.id)}`)
+
+    const id = socket.handshake.query.id
+    /** Send message to a specific client **/
+    // socket.join(id)
+
+    socket.emit('first-login', socket.handshake)
+
+    let count = 0
+    socket.on('request', async (data) => {
+        count++
+        /** Broadcast message to all client **/
+        // socket.broadcast.emit('response', `Ini response untuk client ${id}`)
+        /** Send message to a specific client **/
+        // socket.broadcast.to(clientId).emit('response', `Ini response untuk client ${id}`)
+        
+        console.log(`request from client ${id} :`, data, `, counting request : ${count}`)
+        const response = await socketRequest(data)
+
+        socket.emit('response', response)
+    })
+
+    socket.on('disconnect', () => {
+        count = 0
+        console.log(`a client connected, socket : ${socket.id} ${JSON.stringify(socket.handshake.query.id)}`)
+    })
 });
 //#endregion
 
