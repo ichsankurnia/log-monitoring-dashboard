@@ -10,40 +10,48 @@ import NoMatch404 from "./components/NoMatch404";
 
 const routes = [
     {
-        path : "/",
-        exact: true,
+        path : "/index",
+        layout: '/admin',
         component: HomeDashboard
     },
     {
-        path : "/admin/data-user",
+        path : "/data-user",
+        layout: '/admin',
         component: DataUser
     },
     {
-        path : "/admin/data-perangkat",
+        path : "/data-perangkat",
+        layout: '/admin',
         component: DataPerangkat
     },
     {
-        path : "/admin/data-part",
+        path : "/data-part",
+        layout: '/admin',
         component: DataPart
     },
     {
-        path : "/admin/data-penyebab",
+        path : "/data-penyebab",
+        layout: '/admin',
         component: DataPenyebab
     },
     {
-        path : "/admin/data-solusi",
+        path : "/data-solusi",
+        layout: '/admin',
         component: DataSolusi
     },
     {
-        path : "/admin/data-project",
+        path : "/data-project",
+        layout: '/admin',
         component: DataProjek
     },
     {
-        path : "/admin/data-lokasi",
+        path : "/data-lokasi",
+        layout: '/admin',
         component: DataLokasi
     },
     {
         path : "/*",
+        layout: '/admin',
         component: NoMatch404
     }
 ]

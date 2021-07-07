@@ -1,7 +1,7 @@
 import { Breadcrumb, Layout } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import routes from '../routes';
 
@@ -9,8 +9,20 @@ const { Header, Footer, Sider, Content } = Layout;
 
 const Dashboard = () => {
 
+    // MAIN ROUTE
+	const getRoutes = (routes) => {
+		return routes.map((data, key) => {
+			if (data.layout === "/admin") {
+				return (
+					<Route path={data.layout + data.path} component={data.component} key={key} />
+				);
+			} else {
+				return null;
+			}
+		});
+	}
+
     return (
-        <BrowserRouter>
             <Layout style={{height: '100vh', overflow: 'hidden'}}>
             {/* <Layout> */}
                 <Header style={{padding: 10}}>
@@ -29,14 +41,8 @@ const Dashboard = () => {
                             </Breadcrumb>
                             <div style={{background: '#fff', height: '90vh'}}>
                                 <Switch>
-                                    {routes.map((route, index) => (
-                                        <Route 
-                                        key={index}
-                                        path={route.path}
-                                        exact={route.exact}
-                                        component={route.component}
-                                        />
-                                        ))}
+                                    {getRoutes(routes)}
+                                    <Redirect from="*" to="/admin/index" />
                                 </Switch>
                             </div>
                         </Content>
@@ -44,7 +50,6 @@ const Dashboard = () => {
                     </Layout>
                 </Layout>
             </Layout>
-        </BrowserRouter>
     )
 }
 
