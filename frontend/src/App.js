@@ -1,21 +1,29 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { SocketProvider } from "./context/SocketProvider";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
 
+const gntRandomNumber = () => {
+    return Math.floor((Math.random() * 1000) + 1).toString()
+}
+
 function App(props) {
 	return (
-		<BrowserRouter>
-			<Switch>
-				{/* <Route path="/auth" render={props => <Login {...props} />} />
-				<Route path="/" exact render={props => <Dashboard {...props} />} />
-				<Route path="*" render={props => <NotFoundPage {...props} />} /> */}
-				<Route path="/auth" component={Login} />
-				<Route path="/" exact component={Dashboard} />
-				<Route path="*" component={NotFoundPage} />
-			</Switch>
-			{/* <Login /> */}
-		</BrowserRouter>
+		<SocketProvider id={gntRandomNumber()}>
+			<BrowserRouter>
+				<Switch>
+					<Route path="/auth" render={props => <Login {...props} />} />
+					<Route path="/admin" render={props => <Dashboard {...props} />} />
+					{/* <Route path="*" render={props => <NotFoundPage {...props} />} /> */}
+					<Redirect from="/" to="/admin/index" />
+					{/* <Route path="/auth" component={Login} /> */}
+					{/* <Route path="/" exact component={Dashboard} /> */}
+					{/* <Route path="*" component={NotFoundPage} /> */}
+				</Switch>
+				{/* <Login /> */}
+			</BrowserRouter>
+		</SocketProvider>
 	);
 }
 
