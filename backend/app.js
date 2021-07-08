@@ -3,9 +3,8 @@ const httpServer = require("http").createServer(app);
 const cors = require('cors')
 const bodyParser = require('body-parser');
 
-const { getUser, getTroubleET, insetTroubleET } = require("./db");
 const route = require("./routes");
-const socketRequest = require("./routes/socket-routes");
+const socketRoutes = require("./routes/socket-routes");
 
 require('dotenv').config()
 
@@ -16,17 +15,26 @@ const io = require("socket.io")(httpServer, {
 });
 const PORT = process.env.PORT || 1212
 
-//#region SOCKET EVENT
-io.on("connection", (socket) => {
-    // ...
-    console.log(`a client connected, socket : ${socket.id} ${JSON.stringify(socket.handshake.query.id)}`)
 
+//#region MIDLEWARE
+app.use(cors())
+// parse application/json
+app.use(bodyParser.json({limit : "100mb"}))
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({limit : "100mb", extended: false }))
+//#endregion
+
+
+//#region SOCKET EVENT
+io.on("connection", async (socket) => {
+    console.log(`a client connected, socket : ${socket.id} ${JSON.stringify(socket.handshake.query.id)}`)
+    
     const id = socket.handshake.query.id
     /** Send message to a specific client **/
     // socket.join(id)
-
+    
     socket.emit('first-login', socket.handshake)
-
+    
     let count = 0
     socket.on('request', async (data) => {
         count++
@@ -36,7 +44,7 @@ io.on("connection", (socket) => {
         // socket.broadcast.to(clientId).emit('response', `Ini response untuk client ${id}`)
         
         console.log(`request from client ${id} :`, data, `, counting request : ${count}`)
-        const response = await socketRequest(data)
+        const response = await socketRoutes(data)
 
         socket.emit('response', response)
     })
@@ -49,15 +57,6 @@ io.on("connection", (socket) => {
 //#endregion
 
 
-//#region MIDLEWARE
-app.use(cors())
-// parse application/json
-app.use(bodyParser.json({limit : "100mb"}))
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({limit : "100mb", extended: false }))
-//#endregion
-
-
 //#region ENDPOINT
 app.get('/', (req, res) => {
     res.json({
@@ -66,10 +65,6 @@ app.get('/', (req, res) => {
         author: 'ichsankurnia 😎',
     })
 })
-
-app.get('/user', getUser)
-app.get('/et', getTroubleET)
-app.post('/trouble-et', insetTroubleET)
 app.use('/api/', route)
 //#endregion
 
