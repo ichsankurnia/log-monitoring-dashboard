@@ -1,4 +1,4 @@
-const { db, commonQueryGetAll, commonQueryInsert, commonQueryUpdate, commonQueryGetOne, commonQueryDelete } = require("./database")
+const { db, commonQueryInsert, commonQueryUpdate, commonQueryDelete } = require("./database")
 
 const tableName = 'public.et'
 
