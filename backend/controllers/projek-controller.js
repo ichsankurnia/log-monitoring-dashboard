@@ -21,7 +21,7 @@ class ProjekController {
     static getProyek = async () => {
         try {
             const data = await Projek.findAll()
-            return response(10, 'success get all model', data)
+            return response(10, 'success get all projek', data)
         } catch (error) {
             return response(410, error.message, null)
         }
@@ -57,9 +57,9 @@ class ProjekController {
             const editData = await Projek.update({no_projek: prefix[2]}, payload)
             if(editData){
                 const allProjek = await Projek.findAll()
-                return response(12, `success delete projek, no_projek: ${prefix[2]}`, allProjek)
+                return response(12, `success update projek, no_projek: ${prefix[2]}`, allProjek)
             }else{
-                return response(512, `fail edit projek, no_projek: ${prefix[2]}`, null)
+                return response(512, `fail update projek, no_projek: ${prefix[2]}`, null)
             }
         } catch (error) {
             return response(412, error.message, null)       
