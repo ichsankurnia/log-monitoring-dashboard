@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { SocketProvider } from "./context/SocketProvider";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import NotFoundPage from "./pages/NotFoundPage";
 
 const gntRandomNumber = () => {
     return Math.floor((Math.random() * 1000) + 1).toString()

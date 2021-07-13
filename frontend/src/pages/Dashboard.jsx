@@ -1,7 +1,7 @@
 import { Breadcrumb, Layout } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
-import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import routes from '../routes';
 

@@ -1,6 +1,6 @@
 import { Form, Input, Button } from 'antd';
 import Layout from 'antd/lib/layout/layout';
-import { useHistory, withRouter } from 'react-router';
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
