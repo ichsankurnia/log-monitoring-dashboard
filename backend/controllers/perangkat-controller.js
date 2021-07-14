@@ -73,7 +73,8 @@ class PerangkatController {
         try {
             const deleteData = await Perangkat.delete({no_perangkat: parseInt(prefix[2])})
             if(deleteData){
-                return response(33, `success delete perangkat, no_perangkat : ${prefix[2]}`, null)
+                const allPerangkat = await Perangkat.findAll()
+                return response(33, `success delete perangkat, no_perangkat : ${prefix[2]}`, allPerangkat)
             }else{
                 return response(533, `fail delete perangkat, no_perangkat : ${prefix[2]}`, null)
             }
