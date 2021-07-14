@@ -36,6 +36,8 @@ class DataProjek extends React.Component {
 
     componentWillUnmount(){
         clearTimeout(this.toReconSocket)
+        socket.off('response')
+        socket = null
     }
 
     handleSocketEvent = () => {
@@ -62,7 +64,7 @@ class DataProjek extends React.Component {
     }
 
     handleDeleteData = (data) => {
-        console.log(data)
+        socket.emit('request', `projek_delete_${data.no_projek}`)
     }
     
     handleAddData = () => {
@@ -153,6 +155,7 @@ class DataProjek extends React.Component {
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
+                    pagination={{ pageSize: 7 }} 
                 />
             </div>
             <FormProjek
