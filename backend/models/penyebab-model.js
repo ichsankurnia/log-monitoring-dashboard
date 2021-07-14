@@ -53,8 +53,8 @@ class Penyebab {
         console.log(sql)
 
         try {
-            const result = await db.query(sql)
-            return result.rows[0]
+            await db.query(sql)
+            return payload
         } catch (error) {
             console.error(error.message)
             return false
