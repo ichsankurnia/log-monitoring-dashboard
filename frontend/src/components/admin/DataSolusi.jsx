@@ -1,7 +1,177 @@
-const DataSolusi = () => {
-    return (
-        <div>DataSolusi</div>
-    )
+import { Table, Popconfirm, Button } from "antd"
+import React from "react"
+import SocketContext from "../../context/SocketProvider"
+import FormSolusi from "../form/FormSolusi"
+
+let socket = null
+
+class DataSolusi extends React.Component {
+    static contextType = SocketContext
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            dataTable: [],
+            filteredInfo: null,
+            sortedInfo: null,
+            showForm: false,
+            rowDataSelected: {},
+            isUpdate: false,
+            id_solusi: 0
+        }
+    }
+
+    componentDidMount(){
+        socket = this.context
+        if(socket){
+            socket.emit('request', 'solusi_get')
+            this.handleSocketEvent()
+        }else{
+            this.toReconSocket = setTimeout(() => {
+                this.componentDidMount()
+            }, 1000);
+        }
+    }
+
+    componentWillUnmount(){
+        clearTimeout(this.toReconSocket)
+        socket.off('response')
+        socket = null
+    }
+
+    handleSocketEvent = () => {
+        socket.on('response', (res) => {
+            console.log(res)
+            if(res.code === 60 || res.code === 61 || res.code === 62 || res.code === 63){
+                this.setState({dataTable: res.data})
+            }else if(res.code === 50){
+                console.log(res.message)
+            }else{
+                alert(res.message)
+            }
+        })
+    }
+
+    handleChange = (pagination, filters, sorter) => {
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    };
+
+    handleEditData = (data) => {
+        this.setState({rowDataSelected: data, showForm: true, isUpdate: true, id_solusi: data.id_solusi})
+    }
+
+    handleDeleteData = (data) => {
+        socket.emit('request', `solusi_delete_${data.id_solusi}`)
+    }
+    
+    handleAddData = () => {
+        this.setState({rowDataSelected: null, showForm: true, isUpdate: false})
+    }
+
+    handleSubmitData = (submittedData) => {
+        const { nama_solusi, no_penyebab, b_active } = submittedData
+        if(!this.state.isUpdate){
+            console.log("SUBMIT ADD DATA", submittedData)
+            socket.emit('request', `solusi_add_${nama_solusi}_${no_penyebab}`)
+        }else{
+            console.log("SUBMIT EDIT DATA", submittedData)
+            socket.emit('request', `solusi_edit_${this.state.id_solusi}_${nama_solusi}_${no_penyebab}_${b_active}`)
+        }
+        this.setState({showForm: false})
+    }
+
+
+    handleClose = () => {
+        this.setState({showForm: false})
+    }
+
+    render(){
+        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
+        sortedInfo = sortedInfo || {};
+        filteredInfo = filteredInfo || {};
+
+        const columns = [
+            {
+                title: "ID Solusi",
+                dataIndex: "id_solusi",
+                key: 'id_solusi',
+                sorter: (a, b) => a.id_solusi - b.id_solusi,
+                sortOrder: sortedInfo.columnKey === 'id_solusi' && sortedInfo.order,
+            },
+            {
+                title: "Solusi",
+                dataIndex: "nama_solusi",
+                key: 'nama_solusi',
+                sorter: (a, b) => a.nama_solusi.localeCompare(b.nama_solusi),
+                sortOrder: sortedInfo.columnKey === 'nama_solusi' && sortedInfo.order,
+            },
+            {
+                title: "Penyebab",
+                dataIndex: "penyebab",
+                key: 'penyebab',
+                sorter: (a, b) => a.penyebab.localeCompare(b.penyebab),
+                sortOrder: sortedInfo.columnKey === 'penyebab' && sortedInfo.order,
+            },
+            {
+                title: "Kategori",
+                dataIndex: "kategori",
+                key: 'kategori'
+            },
+            {
+                title: "Active",
+                dataIndex: 'b_active',
+                key: 'b_active',
+                filters: [
+                    { text: 'Active', value: 't' },
+                    { text: 'Non Active', value: 'f' },
+                ],
+                filteredValue: filteredInfo.b_active || null,
+                onFilter: (value, record) => {
+                    return record.b_active.includes(value)
+                }
+            },
+            {
+                title: "Action",
+                fixed: 'right',
+                render: (dataSelected) => 
+                    dataTable.length > 1 &&
+                    <>
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
+                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                        </Popconfirm>
+                    </>
+                
+            }
+        ]
+
+        return (
+            <>
+            <div>
+                <h1>Data Solusi</h1>
+                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Solution</Button>
+                <Table 
+                    rowKey='id_solusi'
+                    columns={columns}
+                    dataSource={dataTable}
+                    onChange={this.handleChange}
+                    pagination={{ pageSize: 6 }} 
+                />
+            </div>
+            <FormSolusi
+                visible={showForm}
+                data={rowDataSelected} 
+                onClose={this.handleClose} 
+                onSubmit={this.handleSubmitData}
+                />
+            </>
+        )
+    }
 }
 
 export default DataSolusi
