@@ -50,7 +50,7 @@ class Solusi {
     }
 
     static create = async (payload) => {
-        const sql = commonQueryInsert(payload)
+        const sql = commonQueryInsert(tableName, payload)
         console.log(sql)
 
         try {
@@ -81,7 +81,7 @@ class Solusi {
     }
 
     static delete = async (identity) => {
-        const sql = commonQueryDelete(tableName, identity, payload)
+        const sql = commonQueryDelete(tableName, identity)
         console.log(sql)
 
         try {

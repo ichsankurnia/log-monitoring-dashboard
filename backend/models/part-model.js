@@ -30,7 +30,7 @@ class Part {
     }
 
     static create = async (payload) => {
-        const sql = commonQueryInsert(tableName)
+        const sql = commonQueryInsert(tableName, payload)
         console.log(sql)
 
         try {
