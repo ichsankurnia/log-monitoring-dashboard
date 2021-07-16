@@ -16,8 +16,41 @@ const TroubleET = require("../models/troubleET-model")
 }
 
 class TroubleETController {
-    static addTrouble = async () => {
+    static getTrouble = async (req, res) => {
+        try {
+            const data = await TroubleET.findAll()
+            return res.json(response(70, 'success get all trouble et', data))
+        } catch (error) {
+            return res.json(response(470, error.message, null))
+        }
+    }
 
+    static getDetailTrouble = async (req, res) => {
+        try {
+            const {ticket_id} = req.params
+            
+            const data = await TroubleET.findOne({no: ticket_id})
+            if(data){
+                return res.json(response(71, 'success get trouble et', data))
+            }else{
+                return res.json(response(571, `fail get trouble et, no : ${ticket_id}`, null))
+            }
+        } catch (error) {
+            return res.json(response(471, error.message, null))
+        }
+    }
+
+    static addTrouble = async (req, res) => {
+        try {
+            const data = await TroubleET.create(req.body)
+            if(data){
+                return res.json(response(72, 'fail add new trouble et', data))
+            }else{
+                return res.json(response(572, 'fail add new trouble et', null))
+            }
+        } catch (error) {
+            return res.json(response(472, error.message, null))
+        }
     }
 
 
