@@ -90,7 +90,9 @@ class Sidebar extends Component {
                     </Menu.ItemGroup>
                 </SubMenu>
                 <SubMenu key="datalog" icon={<AppstoreOutlined />} title="Data Log">
-                    <Menu.Item key="log" icon={<DatabaseOutlined />}>Log</Menu.Item>
+                    <Menu.Item key="log" icon={<DatabaseOutlined />}>
+                        <Link to="/admin/data-log">Data Log</Link>
+                    </Menu.Item>
                     <SubMenu key="export" title="Export" icon={<ExportOutlined />}>
                         <Menu.Item key="expDocumentation" icon={<VideoCameraOutlined />}>Dokumentasi</Menu.Item>
                         <Menu.Item key="expData" icon={<ExportOutlined />}>Export Data</Menu.Item>
