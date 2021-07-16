@@ -1,8 +1,41 @@
-const { db, commonQueryInsert } = require("./database")
+const { db, commonQueryInsert, commonQueryGetOne } = require("./database")
 
 const tableName = 'public.trouble_et'
 
 class TroubleET {
+    static findAll = async () => {
+        const sql = `
+            SELECT 
+                no, tanggal_masalah, jam_masalah, tanggal_done, jam_done, jenislaporan, no_projek, ip, no_perangkat,
+                no_pvm, problem, no_penyebab, solusi, status, no_user, sumber, refnumber, refnotrouble,
+                teknisi, totaldowntime, arah_gate
+            FROM ${tableName}
+            ORDER BY tanggal_done desc limit 500
+        `
+        console.log(sql)
+
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
+    }
+
+    static findOne = async (identity) => {
+        const sql = commonQueryGetOne(tableName, identity)
+        console.log(sql)
+
+        try {
+            const result = await db.query(sql)
+            return result.rows[0]
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
+    }
+
     static create = async (dataInsert) => {
         const sql = commonQueryInsert(tableName, dataInsert)
         console.log(sql)
