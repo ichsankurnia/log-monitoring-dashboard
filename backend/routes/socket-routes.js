@@ -4,6 +4,7 @@ const { PenyebabController } = require("../controllers/penyebab-controller")
 const { PerangkatController } = require("../controllers/perangkat-controller")
 const { ProjekController } = require("../controllers/projek-controller")
 const { SolusiController } = require("../controllers/solusi-controller")
+const { TroubleETController } = require("../controllers/troubleET-controller")
 const { UserSocket } = require("../controllers/user-controller")
 
 
@@ -34,6 +35,9 @@ const socketRoutes = (req) => {
             break;
         case 'solusi':
             response = solusiAgent(prefix[1])
+            break;
+        case 'troubleET':
+            response = troubleETAgent(prefix[1])
             break;
         default:
             break;
@@ -199,6 +203,23 @@ const solusiAgent = (suffix) => {
             break;
         case 'delete':
             response = SolusiController.deleteSolusi(prefix)
+            break;
+        default:
+            break;
+    }
+
+    return response
+}
+
+
+const troubleETAgent = (suffix) => {
+    let response = null
+    switch (suffix) {
+        case 'downtime':
+            response = TroubleETController.getDownTime(prefix)
+            break;
+        case 'noticket':
+            response = TroubleETController.getNoTicket(prefix)
             break;
         default:
             break;
