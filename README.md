@@ -1,10 +1,15 @@
 ## This project was built using
 
-### `NodeJS` ### `ExpressJS` ### `PostgreSQL` ### `SocketIO` ### `Rest API` ### `ReactJS` ### `SocketIO-Client` ### `Ant Design`
+### `NodeJS` `ExpressJS` `PostgreSQL` `SocketIO` `Rest API` `ReactJS` `SocketIO-Client` `Axios` `Ant Design`
+
 
 
 
 ## In the Back-End project directory, you can run:
+
+### `npm install`
+
+To install all depedencies in this project
 
 ### `nodemon app.js`
 
@@ -12,7 +17,12 @@ Runs the back-end service in the development mode.
 You will also see any lint errors in the console
 
 
+
 ## And for the Front-End you can run :
+
+### `npm install`
+
+To install all depedencies in this project
 
 ### `npm start`
 
