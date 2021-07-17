@@ -6,11 +6,31 @@ class TroubleET {
     static findAll = async () => {
         const sql = `
             SELECT 
-                no, tanggal_masalah, jam_masalah, tanggal_done, jam_done, jenislaporan, no_projek, ip, no_perangkat,
-                no_pvm, problem, no_penyebab, solusi, status, no_user, sumber, refnumber, refnotrouble,
-                teknisi, totaldowntime, arah_gate
-            FROM ${tableName}
-            ORDER BY tanggal_done desc limit 500
+                no, tanggal_masalah, jam_masalah, tanggal_done, jam_done, jenislaporan, 
+                PROJ.no_projek, PROJ.nama_projek, 
+                LOK.ip, LOK.nama_stasiun, 
+                PER.no_perangkat, PER.nama_perangkat, 
+                PART.no_pvm, PART.nama_perangkat as nama_part,
+                problem, MasalahTerbanyak.no_penyebab, PEN.penyebab,
+                solusi, status, no_user, sumber, refnumber, refnotrouble, teknisi, totaldowntime, arah_gate, counts
+            FROM public.trouble_et 
+            LEFT JOIN (
+                SELECT count(*) as counts, no_penyebab
+                FROM public.trouble_et 
+                GROUP BY no_penyebab
+            ) as MasalahTerbanyak
+            ON MasalahTerbanyak.no_penyebab = public.trouble_et.no_penyebab
+            LEFT JOIN public.projek as PROJ
+            ON PROJ.no_projek = public.trouble_et.no_projek
+            LEFT JOIN public.stasiun as LOK
+            ON LOK.ip = public.trouble_et.ip
+            LEFT JOIN public.et as PER
+            ON PER.no_perangkat = public.trouble_et.no_perangkat
+            LEFT JOIN public.perangkat_vm as PART
+            ON PART.no_pvm = public.trouble_et.no_pvm
+            LEFT JOIN public.penyebab as PEN
+            ON PEN.no_penyebab = public.trouble_et.no_penyebab 
+            ORDER BY counts DESC, tanggal_done DESC
         `
         console.log(sql)
 
