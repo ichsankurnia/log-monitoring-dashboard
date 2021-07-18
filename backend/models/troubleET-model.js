@@ -1,4 +1,4 @@
-const { db, commonQueryInsert, commonQueryGetOne } = require("./database")
+const { db, commonQueryInsert, commonQueryGetOne, commonQueryUpdate, commonQueryDelete } = require("./database")
 
 const tableName = 'public.trouble_et'
 
@@ -69,6 +69,42 @@ class TroubleET {
         }
     }
 
+    static update = async (identity, dataUpdate) => {
+        const sql = commonQueryUpdate(tableName, identity, dataUpdate)
+        console.log(sql)
+
+        try {
+            const result = await db.query(sql)
+            if(result.rowCount > 0){
+                const data = this.findOne(identity)
+                return data
+            }else{
+                console.log(`TROUBLE ET WITH TICKET NUM ${JSON.stringify(identity)} NOT FOUND`)
+                return false
+            }
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
+    }
+
+    static delete = async (identity) => {
+        const sql = commonQueryDelete(tableName, identity)
+        console.log(sql)
+
+        try {
+            const result = await db.query(sql)
+            if(result.rowCount > 0){
+                return result
+            }else{
+                console.log(`TROUBLE ET WITH TICKET NUM ${JSON.stringify(identity)} NOT FOUND`)
+                return false
+            }
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
+    }
 
     static noTicket = async (noProjek) => {
         const sql = `
