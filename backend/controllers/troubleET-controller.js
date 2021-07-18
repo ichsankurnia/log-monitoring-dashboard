@@ -19,7 +19,7 @@ class TroubleETController {
     static getTrouble = async (req, res) => {
         try {
             const data = await TroubleET.findAll()
-            return res.json(response(70, 'success get all trouble et', data))
+            return res.json(response(0, 'success get all trouble et', data))
         } catch (error) {
             return res.json(response(470, error.message, null))
         }
@@ -31,7 +31,7 @@ class TroubleETController {
             
             const data = await TroubleET.findOne({no: ticket_id})
             if(data){
-                return res.json(response(71, 'success get trouble et', data))
+                return res.json(response(0, 'success get trouble et', data))
             }else{
                 return res.json(response(571, `fail get trouble et, no : ${ticket_id}`, null))
             }
@@ -44,7 +44,7 @@ class TroubleETController {
         try {
             const data = await TroubleET.create(req.body)
             if(data){
-                return res.json(response(72, 'fail add new trouble et', data))
+                return res.json(response(0, 'fail add new trouble et', data))
             }else{
                 return res.json(response(572, 'fail add new trouble et', null))
             }
@@ -53,6 +53,35 @@ class TroubleETController {
         }
     }
 
+    static editTrouble = async (req, res) => {
+        try {
+            const { ticket_id } = req.params
+
+            const data = await TroubleET.update({no: ticket_id}, req.body)
+            if(data){
+                return res.json(response(0, 'success update trouble et', data))
+            }else{
+                return res.json(response(573, 'fail update trouble et', null))
+            }
+        } catch (error) {
+            return res.json(response(473, error.message, null))
+        }
+    }
+
+    static deleteTrouble = async (req, res) => {
+        try {
+            const { ticket_id } = req.params
+
+            const data = await TroubleET.delete({no: ticket_id})
+            if(data){
+                return res.json(response(0, 'success delete trouble et', data))
+            }else{
+                return res.json(response(574, 'fail delete trouble et', null))
+            }
+        } catch (error) {
+            return res.json(response(474, error.message, null))
+        }
+    }
 
     static getNoTicket = async (prefix) => {
         try {
