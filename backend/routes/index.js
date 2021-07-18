@@ -17,5 +17,7 @@ router.delete('/user/:no_user', deleteUser)
 router.get('/troubleet', TroubleETController.getTrouble)
 router.get('/troubleet/:ticket_id', TroubleETController.getDetailTrouble)
 router.post('/troubleet', TroubleETController.addTrouble)
+router.patch('/troubleet/:ticket_id', TroubleETController.editTrouble)
+router.delete('/troubleet/:ticket_id', TroubleETController.deleteTrouble)
 
 module.exports = router
