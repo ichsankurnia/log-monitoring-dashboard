@@ -54,4 +54,15 @@ export const updateTroubleET = async (ticketNum, payload) => {
 }
 
 
+export const deleteTroubleET = async (ticketNum) => {
+    try {
+        const data = await api.delete(`/api/troubleet/${ticketNum}`)
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))
+    }
+}
+
+
 export default api
