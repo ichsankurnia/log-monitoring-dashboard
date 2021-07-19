@@ -30,7 +30,7 @@ class TroubleET {
             ON PART.no_pvm = public.trouble_et.no_pvm
             LEFT JOIN public.penyebab as PEN
             ON PEN.no_penyebab = public.trouble_et.no_penyebab 
-            ORDER BY counts DESC, tanggal_done DESC
+            ORDER BY counts IS NULL ASC, counts DESC, tanggal_done DESC
         `
         console.log(sql)
 
