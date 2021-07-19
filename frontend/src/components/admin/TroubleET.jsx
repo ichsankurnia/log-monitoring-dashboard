@@ -1,14 +1,13 @@
-import { Table, Popconfirm, Button } from "antd"
+import { Table, Popconfirm, Button, Spin } from "antd"
+import { LoadingOutlined } from '@ant-design/icons';
 import moment from "moment"
 import React from "react"
-import { getAllTroubleET } from "../../api"
-import SocketContext from "../../context/SocketProvider"
+import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
 
-let socket = null
+const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
 class TroubleET extends React.Component {
-    static contextType = SocketContext
 
     constructor(props){
         super(props)
@@ -18,9 +17,10 @@ class TroubleET extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showForm: false,
+            showLoader: false,
             rowDataSelected: {},
             isUpdate: false,
-            no_projek: 0
+            no_ticket: 0
         }
     }
 
@@ -37,36 +37,26 @@ class TroubleET extends React.Component {
 
     componentDidMount(){
         this.handleGetAllData()
-
-        socket = this.context
-        if(socket){
-            // socket.emit('request', 'projek_get')
-            this.handleSocketEvent()
-        }else{
-            this.toReconSocket = setTimeout(() => {
-                this.componentDidMount()
-            }, 1000);
-        }
     }
 
-    componentWillUnmount(){
-        clearTimeout(this.toReconSocket)
-        socket.off('response')
-        socket = null
-    }
 
-    handleSocketEvent = () => {
-        socket.on('response', (res) => {
-            console.log(res)
-            if(res.code === 13){
-                this.setState({dataTable: res.data})
-            }else if(res.code === 77 || res.code === 78 || res.code === 10 || res.code === 20|| res.code === 30|| res.code === 40|| res.code === 50|| res.code === 60){
-                console.log(res.message)
+    handleGetDetailTrouble = async (ticketNum) => {
+        this.setState({showLoader: true})
+        const res = await getDetailTroubleET(ticketNum)
+
+        console.log('GET Detail Trouble ET :', res)
+        if(res.data){
+            if(res.data.code === 0){
+                this.setState({rowDataSelected: res.data.data})
             }else{
-                alert(res.message)
+                return false
             }
-        })
+        }else{
+            return false
+        }
+        return true
     }
+
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -76,28 +66,51 @@ class TroubleET extends React.Component {
         });
     };
 
-    handleEditData = (data) => {
-        this.setState({rowDataSelected: data, showForm: true, isUpdate: true, no_projek: data.no_projek})
+    handleEditData = async (data) => {
+        const getDetail = await this.handleGetDetailTrouble(data.no)
+        if(getDetail){
+            this.setState({showForm: true, isUpdate: true, showLoader: false, no_ticket: data.no})
+        }else{
+            alert('cannot get detail trouble et')
+        }
     }
 
-    handleDeleteData = (data) => {
-        socket.emit('request', `projek_delete_${data.no_projek}`)
+    handleDeleteData = async (data) => {
+        const res = await deleteTroubleET(data.no)
+        
+        console.log('Delete TroubleET :', res)
+        if(res.data?.code === 0){
+            this.handleGetAllData()
+        }else{
+            alert('fail deleting ticket')
+        }
     }
     
     handleAddData = () => {
         this.setState({rowDataSelected: null, showForm: true, isUpdate: false})
     }
 
-    handleSubmitData = (submittedData) => {
-        const { nama_projek, initial, b_active } = submittedData
-        if(!this.state.isUpdate){
-            console.log("SUBMIT ADD DATA", submittedData)
-            socket.emit('request', `projek_add_${nama_projek}_${initial}`)
+    handleSubmitData = async (ticketNum, submittedData) => {
+        this.setState({showLoader: true})
+        let payload = {...submittedData}
+        let res = null
+
+        if(this.state.isUpdate){
+            res = await updateTroubleET(ticketNum, payload)
         }else{
-            console.log("SUBMIT EDIT DATA", submittedData)
-            socket.emit('request', `projek_edit_${this.state.no_projek}_${nama_projek}_${initial}_${b_active}`)
+            payload.no = await ticketNum
+
+            res = await addNewTroubleET(payload)
         }
-        this.setState({showForm: false})
+
+        console.log(`${this.state.isUpdate? 'Update' : 'Add new'} TroubleET :`, res)
+        if(res.data?.code === 0){
+            this.handleGetAllData()
+        }else{
+            alert(`${this.state.isUpdate? 'Update' : 'Add new'} TroubleET failed`)
+        }
+
+        this.setState({showForm: false, showLoader: false})
     }
 
 
@@ -106,7 +119,7 @@ class TroubleET extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showForm, showLoader, rowDataSelected } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -233,24 +246,34 @@ class TroubleET extends React.Component {
         return (
             <>
             <div>
-                <h1>Data Trouble ET</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Trouble</Button>
-                <Table 
-                    rowKey='no'
-                    columns={columns}
-                    dataSource={dataTable}
-                    onChange={this.handleChange}
-                    pagination={{ pageSize: 9 }}
-                    scroll={{x: 'max-content'}}
-                    size='small'
-                />
+                <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
+                    <h1>Data Trouble ET</h1>
+                    <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Trouble</Button>
+                    <Table 
+                        rowKey='no'
+                        columns={columns}
+                        dataSource={dataTable}
+                        onChange={this.handleChange}
+                        pagination={{ pageSize: 9 }}
+                        scroll={{x: 'max-content'}}
+                        size='small'
+                    />
+                </Spin>
             </div>
-            <FormTroubleET
-                visible={showForm}
-                data={rowDataSelected} 
-                onClose={this.handleClose} 
-                onSubmit={this.handleSubmitData}
-                />
+            {showForm && 
+                <FormTroubleET
+                    data={rowDataSelected} 
+                    onClose={this.handleClose} 
+                    onSubmit={this.handleSubmitData}
+                    />
+            }
+            {/* {showLoader && 
+            <Progress strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+              percent={99.9}/>
+            } */}
             </>
         )
     }
