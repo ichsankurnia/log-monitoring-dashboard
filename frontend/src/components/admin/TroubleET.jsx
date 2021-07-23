@@ -1,9 +1,11 @@
-import { Table, Popconfirm, Button, Spin } from "antd"
-import { LoadingOutlined } from '@ant-design/icons';
+import { /* Table,  */Popconfirm, Button, Spin, DatePicker } from "antd"
+import { Table } from "ant-table-extensions";
+import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
 import moment from "moment"
 import React from "react"
 import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
+import ExportExcel from "../../helpers/ExportExcel";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -13,6 +15,7 @@ class TroubleET extends React.Component {
         super(props)
 
         this.state = {
+            allData: [],
             dataTable: [],
             filteredInfo: null,
             sortedInfo: null,
@@ -30,7 +33,7 @@ class TroubleET extends React.Component {
 
         if(res.data){
             if(res.data.code === 0){
-                this.setState({dataTable: res.data.data})
+                this.setState({allData: res.data.data, dataTable: res.data.data})
             }
         }
     }
@@ -114,6 +117,24 @@ class TroubleET extends React.Component {
     }
 
 
+    filterByTanggalDone = (date, param) => {
+        let dataTable = [...this.state.allData]
+        let result = []
+        if(date && date[0] && date[1]){
+            result = dataTable.filter(res => {
+                return moment(res[param], moment(res[param]).creationData().format).isBetween(date[0], date[1])
+            })
+            this.setState({dataTable: result})
+        }else{
+            this.setState({dataTable: this.state.allData})
+        }
+    }
+
+    handleExportListTrouble = () => {
+        ExportExcel.exportListTroubleET(this.state.dataTable)
+    }
+
+
     handleClose = () => {
         this.setState({showForm: false})
     }
@@ -134,6 +155,8 @@ class TroubleET extends React.Component {
                 title: "Tanggal Done",
                 dataIndex: "tanggal_done",
                 key: 'tanggal_done',
+                sorter: (a, b) => moment(a.tanggal_done, moment(a).creationData().format) - moment(b.tanggal_done, moment(b).creationData().format),
+                sortOrder: sortedInfo.columnKey === 'tanggal_done' && sortedInfo.order,
                 render: (data) =>
                     <span>{moment(data, moment(data).creationData().format).format('DD-MM-YYYY')}</span>
             },
@@ -249,6 +272,13 @@ class TroubleET extends React.Component {
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1>Data Trouble ET</h1>
                     <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Trouble</Button>
+                    <label>Filter By Tanggal Masalah</label>
+                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_masalah')} />
+                    <label>Filter By Tanggal Done</label>
+                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble}>
+                        Export
+                    </Button>
                     <Table 
                         rowKey='no'
                         columns={columns}
@@ -257,6 +287,9 @@ class TroubleET extends React.Component {
                         pagination={{ pageSize: 9 }}
                         scroll={{x: 'max-content'}}
                         size='small'
+                        // searchableProps={{ fuzzySearch: true }}
+                        // exportableProps={{showColumnPicker: true}}
+                        searchable
                     />
                 </Spin>
             </div>
