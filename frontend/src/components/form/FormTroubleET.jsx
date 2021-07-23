@@ -263,21 +263,29 @@ class FormTroubleET extends React.Component {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item name="no_perangkat" label="Device">
+                            {data?
+                                <Input readOnly />
+                            :
                                 <Select loading={loading} onFocus={() => this.handleGetItem('perangkat')}>
                                 {perangkat.map(data => (
                                     <Option key={data.no_perangkat}>{data.nama_perangkat}</Option>
                                 ))}
                                 </Select>
+                            }
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                         {jenisLaporan?.toLocaleLowerCase() === 'permasalahan' &&
                             <Form.Item name="no_pvm" label="Part" >
+                            {data?
+                                <Input readOnly />
+                            :
                                 <Select loading={loading} onFocus={() => this.handleGetItem('part')}>
                                 {part.map(data => (
                                     <Option key={data.no_pvm}>{data.nama_perangkat}</Option>
                                 ))}
                                 </Select>
+                            }
                             </Form.Item>
                         }
                         </Col>
@@ -300,7 +308,7 @@ class FormTroubleET extends React.Component {
                         </Col>
                         }
                         <Col span={jenisLaporan?.toLocaleLowerCase() === 'permasalahan'? 8 : 12}>
-                            <Form.Item name="nama_solusi" label="Solution" >
+                            <Form.Item name="solusi" label="Solution" >
                             {jenisLaporan?.toLocaleLowerCase() === 'permasalahan'?
                                 <Select loading={loading} onFocus={() => this.handleGetItem('solusi')}>
                                 {solusi.map(data => (
@@ -310,7 +318,7 @@ class FormTroubleET extends React.Component {
                                 :
                                 <Input placeholder='Please enter the solution' />
                             }
-                        </Form.Item>
+                            </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={16}>
@@ -320,9 +328,15 @@ class FormTroubleET extends React.Component {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
+                        {data?
+                            <Form.Item name="refnumber" label="Ref BA Logistics">
+                                <Input placeholder="Please enter ref number complaint" />
+                            </Form.Item>
+                        :
                             <Form.Item name="refnotrouble" label="Ref Num Complaint">
                                 <Input placeholder="Please enter ref number complaint" />
                             </Form.Item>
+                        }
                         </Col>
                         <Col span={8}>
                             <Form.Item name="teknisi" label="Technician" >
@@ -333,12 +347,16 @@ class FormTroubleET extends React.Component {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item name="arah_gate" label="Gate Direction">
+                            {data?
+                                <Input readOnly />
+                            :
                                 <Select placeholder="Please enter gate direction if available">
                                     <Option key={null}>-</Option>
                                     <Option key="IN">IN</Option>
                                     <Option key="OUT">OUT</Option>
                                     <Option key="IN OUT">IN OUT</Option>
                                 </Select>
+                            }
                             </Form.Item>
                         </Col>
                         <Col span={12}>
