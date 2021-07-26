@@ -7,7 +7,7 @@ import DataPerangkat from "./components/admin/DataPerangkat";
 import DataProjek from "./components/admin/DataProject";
 import DataSolusi from "./components/admin/DataSolusi";
 import NoMatch404 from "./components/NoMatch404";
-import TroubleET from "./components/admin/TroubleET";
+import TroubleET from "./components/log/TroubleET";
 
 const routes = [
     {
