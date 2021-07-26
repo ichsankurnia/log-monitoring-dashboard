@@ -95,15 +95,14 @@ class TroubleET extends React.Component {
 
     handleSubmitData = async (ticketNum, submittedData) => {
         this.setState({showLoader: true})
-        let payload = {...submittedData}
         let res = null
 
         if(this.state.isUpdate){
-            res = await updateTroubleET(ticketNum, payload)
+            res = await updateTroubleET(ticketNum, submittedData.data)
         }else{
-            payload.no = await ticketNum
+            submittedData.data.no = await ticketNum
 
-            res = await addNewTroubleET(payload)
+            res = await addNewTroubleET(submittedData)
         }
 
         console.log(`${this.state.isUpdate? 'Update' : 'Add new'} TroubleET :`, res)
