@@ -375,14 +375,29 @@ class ExportExcel {
         worksheet.getCell('I7').border = {right: { style: 'thick' }, top: { style: 'thick' } }
         worksheet.getCell('I15').border = {right: { style: 'thick' }, bottom: { style: 'thick' } }
 
-        workbook.xlsx.writeBuffer().then(function(buffer) {
-            saveAs(
-                new Blob([buffer], { type: "application/octet-stream" }),
-                `Form Permintaan Barang.xlsx`
-            );
-        });
+        const fileBuffer = await workbook.xlsx.writeBuffer()
+        const blob = new Blob([fileBuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})  // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.ms-excel
+        const res = await blobToBase64(blob)
+        return res
+
+        // workbook.xlsx.writeBuffer().then(function(buffer) {
+        //     saveAs(
+        //         new Blob([buffer], { type: "application/octet-stream" }),
+        //         `Form Permintaan Barang.xlsx`
+        //     );
+        // });
     }
 }
+
+const blobToBase64 = blob => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return new Promise(resolve => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+    });
+};
 
 function columnToLetter(column)
 {
@@ -396,7 +411,7 @@ function columnToLetter(column)
     return letter;
 }
 
-function letterToColumn(letter)
+function letterToColumn(letter)                                                                             // eslint-disable-line no-unused-vars
 {
     var column = 0, length = letter.length;
     for (var i = 0; i < length; i++)
