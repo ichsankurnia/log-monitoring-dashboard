@@ -3,6 +3,8 @@ import { Drawer, Form, Button, Col, Row, Input, Select, DatePicker } from 'antd'
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import SocketContext from '../../context/SocketProvider';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
+import ExportExcel from '../../helpers/ExportExcel';
 
 const { Option } = Select;
 
@@ -31,7 +33,8 @@ class FormTroubleET extends React.Component {
             penyebab: [],
             solusi: [],
             jenisLaporan: "",
-            loading: false
+            loading: false,
+            sendEmail: false
         }
 
         this.formRef = React.createRef();
@@ -66,9 +69,9 @@ class FormTroubleET extends React.Component {
 
     handleSocketEvent = () => {
         if(socket){
-            socket.on('response', res => {
+            socket.on('response', async (res) => {
                 console.log(res)
-                if(res.code === 78){
+                if(res.code === 78){                                                                                    // Success getDowntime
                     const downtime = this.formRef.current.getFieldValue('downtime')
                     let payload = this.formRef.current.getFieldsValue()
 
@@ -88,9 +91,37 @@ class FormTroubleET extends React.Component {
                     delete payload.downtime
                     delete payload.no
 
-                    console.log(payload)
+                    let submitedData = {is_send_email: false, desc: '', file: null, data: {}}
+
+                    if(this.state.sendEmail){
+                        const part = this.state.part.filter(data => data.no_pvm === this.formRef.current.getFieldValue('no_pvm'))[0].nama_perangkat
+                        const perangkat = this.state.perangkat.filter(data => data.no_perangkat === this.formRef.current.getFieldValue('no_perangkat'))[0]
+                        const lokasi = this.state.lokasi.filter(data => data.ip === this.formRef.current.getFieldValue('ip'))[0].nama_stasiun
+
+                        const dataXLS = { 
+                            tanggal_masalah : payload['tanggal_masalah'], 
+                            refnotrouble: payload['refnotrouble'],
+                            no: this.formRef.current.getFieldValue('no'), 
+                            nama_projek: this.state.projek.filter(data => data.no_projek === this.formRef.current.getFieldValue('no_projek'))[0].nama_projek,
+                            nama_stasiun: lokasi, 
+                            nama_perangkat: perangkat.nama_perangkat,
+                            id: perangkat.id,
+                            problem: payload['problem']
+                        }
+
+                        const fileXLS = await ExportExcel.exportFormAduan('username', dataXLS)
+
+                        submitedData.is_send_email = true
+                        submitedData.desc = `${part} ${perangkat.nama_perangkat} ${lokasi}`
+                        submitedData.file = fileXLS
+                        submitedData.data = payload
+                    }else{
+                        submitedData.data = payload
+                    }
+
+                    console.log(submitedData)
                     
-                    this.props.onSubmit(this.formRef.current.getFieldValue('no'), payload)
+                    this.props.onSubmit(this.formRef.current.getFieldValue('no'), submitedData)
                     
                     if(this.formRef.current){
                         this.formRef.current.resetFields()
@@ -370,6 +401,15 @@ class FormTroubleET extends React.Component {
                         </Col>
                     </Row>
                 </Form>
+                {/* {!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' && */}
+                    <Checkbox 
+                        checked={this.state.sendEmail}
+                        disabled={!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' ? false : true}
+                        onChange={(e) => this.setState({sendEmail: e.target.checked})}
+                    >
+                        Send Email
+                    </Checkbox>
+                {/* } */}
                 </Drawer>
             </>
         );
