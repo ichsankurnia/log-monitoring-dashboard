@@ -1,8 +1,8 @@
 import ExcelJS from "exceljs/dist/es5/exceljs.browser";
 import saveAs from "file-saver";
-import logoNtc from "../assets/img/logo-nutech.png"
 import logoNtcNT from "../assets/img/logo-nutech-no-trans.jpg"
 import Helper from "./Helper";
+import moment from "moment";
 
 const border = {
     top: { style: 'thin' }, 
@@ -278,6 +278,107 @@ class ExportExcel {
             saveAs(
                 new Blob([buffer], { type: "application/octet-stream" }),
                 `test.xlsx`
+            );
+        });
+    }
+
+    static exportFormAduan = async (user, data) => {
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'ichsankurnia';
+        workbook.lastModifiedBy = 'Ories';
+
+        var worksheet = workbook.addWorksheet("Form Aduan Permintaan dan Perbaikan Barang");
+
+        const base64Img = await Helper.toDataURL(logoNtcNT)
+        var logo = workbook.addImage({
+            base64: base64Img,
+            extension: 'jpeg',
+        });
+        worksheet.addImage(logo, {
+            tl: { col: 1, row: 1 },
+            ext: { width: 140, height: 50 }
+        })
+
+        worksheet.mergeCells('B5:I5')
+        const titleCell = worksheet.getCell('B5')
+        titleCell.font = {
+            size: 11,
+            bold: true
+        }
+        titleCell.alignment = {
+            horizontal: 'center'
+        }
+        titleCell.border = {left: { style: 'thick' }, top: { style: 'thick' }, right: { style: 'thick' }, bottom: { style: 'thick' }}
+        titleCell.value = "Form Aduan Permintaan dan Perbaikan"
+
+        if(data){
+            var { tanggal_masalah, refnotrouble, no, nama_projek, nama_stasiun, nama_perangkat, id, problem } = data
+        }
+
+        worksheet.getCell('B7').value = 'Hari / Tanggal'
+        worksheet.getCell('B8').value = 'Petugas Call Center'
+        worksheet.getCell('B9').value = 'Ref No'
+        worksheet.getCell('B10').value = 'Trouble Ticket'
+        worksheet.getCell('B11').value = 'Nama Projek'
+        worksheet.getCell('B12').value = 'Nama Lokasi'
+        worksheet.getCell('B13').value = 'Nama Barang'
+        worksheet.getCell('B14').value = 'ID Perangkat'
+        worksheet.getCell('B15').value = 'Permasalahan'
+
+        worksheet.getCell('C7').value = ':'
+        worksheet.getCell('C8').value = ':'
+        worksheet.getCell('C9').value = ':'
+        worksheet.getCell('C10').value = ':'
+        worksheet.getCell('C11').value = ':'
+        worksheet.getCell('C12').value = ':'
+        worksheet.getCell('C13').value = ':'
+        worksheet.getCell('C14').value = ':'
+        worksheet.getCell('C15').value = ':'
+
+        worksheet.getCell('D7').value = moment(tanggal_masalah, moment(data).creationData().format).format('dddd, DD MMMM YYYY') || moment().format('dddd, DD MMMM YYYY')
+        worksheet.getCell('D8').value = user || 'User Call Center'
+        worksheet.getCell('D9').value = refnotrouble || ''
+        worksheet.getCell('D10').value = no || ''
+        worksheet.getCell('D11').value = nama_projek || 'Project Name'
+        worksheet.getCell('D12').value = nama_stasiun || 'Location'
+        worksheet.getCell('D13').value = nama_perangkat || 'Device'
+        worksheet.getCell('D14').value = id || 'Device ID'
+        worksheet.getCell('D15').value = problem || 'Problem'
+
+
+        worksheet.columns.forEach((column, i) => {
+            if(column._number === 2){
+                column.width = 20
+            }
+            if(column._number === 3){
+                column.width = 2
+            }
+            column["eachCell"]({ includeEmpty: true }, function (cell) {
+                if(cell._row._number >= 7 && column._number === 2){
+                    cell.font = { bold: true}
+                    cell.border = {left: { style: 'thick' }}
+                }
+                if(cell._row._number >= 7 && column._number === 9){
+                    cell.border = {right: { style: 'thick' }}
+                }
+                if(cell._row._number === 7 && column._number > 1){
+                    cell.border = {top: { style: 'thick' }}
+                }
+                if(cell._row._number === 15 && column._number > 1 ){
+                    cell.border = {bottom: { style: 'thick' }}
+                }
+            });
+        })
+
+        worksheet.getCell('B7').border = {left: { style: 'thick' }, top: { style: 'thick' } }
+        worksheet.getCell('B15').border = {left: { style: 'thick' }, bottom: { style: 'thick' } }
+        worksheet.getCell('I7').border = {right: { style: 'thick' }, top: { style: 'thick' } }
+        worksheet.getCell('I15').border = {right: { style: 'thick' }, bottom: { style: 'thick' } }
+
+        workbook.xlsx.writeBuffer().then(function(buffer) {
+            saveAs(
+                new Blob([buffer], { type: "application/octet-stream" }),
+                `Form Permintaan Barang.xlsx`
             );
         });
     }
