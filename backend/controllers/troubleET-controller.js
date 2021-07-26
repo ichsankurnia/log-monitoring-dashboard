@@ -1,3 +1,4 @@
+const { sendEmailFormAduan } = require("../helpers/send-email")
 const TroubleET = require("../models/troubleET-model")
 
 /**
@@ -40,11 +41,16 @@ class TroubleETController {
         }
     }
 
+
     static addTrouble = async (req, res) => {
         try {
-            const data = await TroubleET.create(req.body)
-            if(data){
-                return res.json(response(0, 'fail add new trouble et', data))
+            const { is_send_email, desc, file, data } = req.body
+            const result = await TroubleET.create(data)
+            if(result){
+                if(is_send_email){
+                    await sendEmailFormAduan(desc, file)
+                }
+                return res.json(response(0, 'success add new trouble et', result))
             }else{
                 return res.json(response(572, 'fail add new trouble et', null))
             }
@@ -52,6 +58,7 @@ class TroubleETController {
             return res.json(response(472, error.message, null))
         }
     }
+    
 
     static editTrouble = async (req, res) => {
         try {
