@@ -239,20 +239,40 @@ class ExportExcel {
                 totaldowntime: item.totaldowntime,
                 status: item.status
             })
+
             // console.log(row)
+            row.height = 70                                                                                                         // SET ROW HEIGHT
+
             row._cells.forEach(cell => {
                 cell.border = border
+                cell.alignment = {
+                    vertical: 'middle',
+                    wrapText: true
+                }
                 // console.log(cell)
             })
+
             worksheet.addImage(workbook.addImage({base64: base64Img, extension: 'jpeg'}), {
                 // tl: { col: columns.length - 2 + 0.2, row: row._number - 1 + 0.1 }, br: { col: columns.length - 1 - 0.2, row: row._number - 0.1 }, editAs: 'absolute'
-                tl: { col: columns.length - 2 + 0.2, row: row._number - 1 }, ext: { width: 100, height: 30 }
+                tl: { col: columns.length - 2 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 160, height: 80 }
             })
             worksheet.addImage(workbook.addImage({base64: base64Img, extension: 'jpeg'}), {
                 // tl: { col: columns.length - 1 + 0.2, row: row._number - 1 + 0.1 }, br: { col: columns.length - 0.2, row: row._number - 0.1 }, editAs: 'oneCell'
-                tl: { col: columns.length - 1, row: row._number - 1 }, ext: { width: 100, height: 30 }
+                tl: { col: columns.length - 1 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 160, height: 80 }
             })
         })
+
+        worksheet.getColumn('pic_before').eachCell({ includeEmpty: false }, cell => {
+            if(cell._row._number >= 8){
+                cell.border = border
+            }
+        })
+        worksheet.getColumn('pic_after').eachCell({ includeEmpty: false }, cell => {
+            if(cell._row._number >= 8){
+                cell.border = border
+            }
+        })
+
 
         // Signature
         let lastRowTable
@@ -277,7 +297,7 @@ class ExportExcel {
         workbook.xlsx.writeBuffer().then(function(buffer) {
             saveAs(
                 new Blob([buffer], { type: "application/octet-stream" }),
-                `test.xlsx`
+                `Dokumentasi Pemasangan Barang.xlsx`
             );
         });
     }
