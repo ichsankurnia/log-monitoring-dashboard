@@ -16,7 +16,6 @@ class Solusi {
 
         try {
             const result = await db.query(sql)
-            console.log(result.rows, result.rowCount)
             return result.rows
         } catch (error) {
             console.error(error.message)
