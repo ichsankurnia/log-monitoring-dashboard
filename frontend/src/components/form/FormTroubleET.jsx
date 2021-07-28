@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import SocketContext from '../../context/SocketProvider';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import ExportExcel from '../../helpers/ExportExcel';
+import ModalSetImage from '../modal/ModalSetImage';
 
 const { Option } = Select;
 
@@ -34,7 +35,11 @@ class FormTroubleET extends React.Component {
             solusi: [],
             jenisLaporan: "",
             loading: false,
-            sendEmail: false
+            sendEmail: false,
+            pic_before: null,
+            pic_after: null,
+            size_imgBefore: {w: 200, h: 200},
+            size_imgafter: {w: 200, h: 200}
         }
 
         this.formRef = React.createRef();
@@ -209,9 +214,20 @@ class FormTroubleET extends React.Component {
         return downtime
     }
 
+    handleSetPicBefore = (image, w, h) => {
+        const size = {w, h}
+        this.setState({pic_before: image, size_imgBefore: size})
+    }
+
+    handleSetPicAfter = (image, w, h) => {
+        const size = {w, h}
+        this.setState({pic_after: image, size_imgafter: size})
+    }
+
+
     render(){
         const { onClose, data } = this.props
-        const { projek, lokasi, perangkat, part, penyebab, solusi, jenisLaporan, loading } = this.state
+        const { projek, lokasi, perangkat, part, penyebab, solusi, jenisLaporan, loading, pic_before, pic_after, size_imgBefore, size_imgafter } = this.state
 
         return (
             <>
@@ -401,6 +417,24 @@ class FormTroubleET extends React.Component {
                         </Col>
                     </Row>
                 </Form>
+                {data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' &&
+                    <>
+                        <ModalSetImage 
+                            picBefore={pic_before}
+                            picAfter={pic_after}
+                            onSetPicBefore={this.handleSetPicBefore}
+                            onSetPicAfter={this.handleSetPicAfter}
+                        />
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <img src={pic_before} width={size_imgBefore.w} height={size_imgBefore.h} alt="pic before" />
+                            </Col>
+                            <Col span={12}>
+                                <img src={pic_after} width={size_imgafter.w} height={size_imgafter.h} alt="pic after" />
+                            </Col>
+                        </Row>
+                    </> 
+                }
                 {/* {!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' && */}
                     <Checkbox 
                         checked={this.state.sendEmail}
