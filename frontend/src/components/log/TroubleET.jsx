@@ -28,6 +28,7 @@ class TroubleET extends React.Component {
     }
 
     handleGetAllData = async () => {
+        this.setState({showLoader: true})
         const res = await getAllTroubleET()
         console.log('Get all trouble ', res)
 
@@ -36,6 +37,7 @@ class TroubleET extends React.Component {
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
         }
+        this.setState({showLoader: false})
     }
 
     componentDidMount(){
