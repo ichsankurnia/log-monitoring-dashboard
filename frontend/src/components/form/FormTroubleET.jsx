@@ -6,6 +6,7 @@ import SocketContext from '../../context/SocketProvider';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import ExportExcel from '../../helpers/ExportExcel';
 import ModalSetImage from '../modal/ModalSetImage';
+import Helper from '../../helpers/Helper';
 
 const { Option } = Select;
 
@@ -18,7 +19,9 @@ const ticketType = [
     'PEKERJAAN'
 ]
 
-let socket = null
+var socket = null
+var picBefore = null
+var picAfter = null
 
 class FormTroubleET extends React.Component {
     static contextType = SocketContext
@@ -34,6 +37,7 @@ class FormTroubleET extends React.Component {
             penyebab: [],
             solusi: [],
             jenisLaporan: "",
+            status: "",
             loading: false,
             sendEmail: false,
             pic_before: null,
@@ -60,7 +64,12 @@ class FormTroubleET extends React.Component {
         if(data){
             this.formRef.current.setFieldsValue(data)
             this.formRef.current.setFieldsValue({downtime: this.getDowntimeMoment(data.tanggal_masalah, data.jam_masalah, data.tanggal_done, data.jam_done)})
-            this.setState({jenisLaporan: data.jenislaporan})
+            this.setState({
+                jenisLaporan: data.jenislaporan, status: data.status, 
+                pic_before: Helper.getASCIIAsBase64(data.pic_before), pic_after: Helper.getASCIIAsBase64(data.pic_after)
+            })
+            picBefore = Helper.getASCIIAsBase64(data.pic_before)                                                                          // buffer pic before
+            picAfter = Helper.getASCIIAsBase64(data.pic_after)                                                                            // buffer pic after
         }else{
             this.formRef.current.resetFields()
         }
@@ -86,6 +95,15 @@ class FormTroubleET extends React.Component {
                     payload['jam_done'] = moment(downtime[1].toString(), GMTFormat).format('HH:mm:ss')
                     payload['totaldowntime'] = res.data.downtime
                     payload['no_user'] = 2
+
+                    console.log(this.state.pic_before === picBefore)
+                    if(this.state.pic_before !== picBefore){                                                        // if current image !== buffer imgae, update image to api
+                        payload['pic_before'] = this.state.pic_before
+                    }
+
+                    if(this.state.pic_after !== picAfter){
+                        payload['pic_after'] = this.state.pic_after
+                    }
 
                     Object.keys(payload).forEach(key => {
                         if(payload[key] === undefined || payload[key] === null){
@@ -170,7 +188,7 @@ class FormTroubleET extends React.Component {
         const status = this.formRef.current.getFieldValue('status')
 
         if(!ticketNumber){
-            alert("Ticket ID is empty or fail to set ticket ID")
+            alert("Fail to set ticket ID, Ticket ID is empty ")
             return false
         }else if(!downtime){
             alert("Downtime Start End date is required")
@@ -206,6 +224,10 @@ class FormTroubleET extends React.Component {
         socket.emit('request', `troubleET_noticket_${this.formRef.current.getFieldValue('no_projek')}`)
     }
 
+    onSelectStatus = () => {
+        this.setState({status: this.formRef.current.getFieldValue('status')})
+    }
+
     getDowntimeMoment = (startDate, startTime, endDate, endTime) => {
         const tanggalMasalah = moment(startDate, moment(startDate).creationData().format).format('yyyy-MM-DD')
         const tanggalDone = moment(endDate, moment(endDate).creationData().format).format('yyyy-MM-DD')
@@ -227,7 +249,7 @@ class FormTroubleET extends React.Component {
 
     render(){
         const { onClose, data } = this.props
-        const { projek, lokasi, perangkat, part, penyebab, solusi, jenisLaporan, loading, pic_before, pic_after, size_imgBefore, size_imgafter } = this.state
+        const { projek, lokasi, perangkat, part, penyebab, solusi, jenisLaporan, status, loading, pic_before, pic_after, size_imgBefore, size_imgafter } = this.state
 
         return (
             <>
@@ -408,7 +430,7 @@ class FormTroubleET extends React.Component {
                         </Col>
                         <Col span={12}>
                             <Form.Item name="status" label="Status">
-                                <Select placeholder="Please enter the status">
+                                <Select placeholder="Please enter the status" onSelect={this.onSelectStatus}>
                                     <Option key="Open">Open</Option>
                                     <Option key="Pending">Pending</Option>
                                     <Option key="Done">Done</Option>
@@ -417,7 +439,7 @@ class FormTroubleET extends React.Component {
                         </Col>
                     </Row>
                 </Form>
-                {data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' &&
+                {data && status.toLocaleLowerCase() === 'done' &&
                     <>
                         <ModalSetImage 
                             picBefore={pic_before}
@@ -425,11 +447,11 @@ class FormTroubleET extends React.Component {
                             onSetPicBefore={this.handleSetPicBefore}
                             onSetPicAfter={this.handleSetPicAfter}
                         />
-                        <Row gutter={16}>
-                            <Col span={12}>
+                        <Row gutter={16} style={{marginTop: 20}}>
+                            <Col span={12} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                 <img src={pic_before} width={size_imgBefore.w} height={size_imgBefore.h} alt="pic before" />
                             </Col>
-                            <Col span={12}>
+                            <Col span={12} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                 <img src={pic_after} width={size_imgafter.w} height={size_imgafter.h} alt="pic after" />
                             </Col>
                         </Row>
