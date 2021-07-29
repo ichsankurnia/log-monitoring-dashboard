@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import { baseURL } from '../api'
 
-const BASE_URL = 'http://localhost:1212'
+const BASE_URL = baseURL
 const SocketContext = React.createContext()
 
 export function useSocket() {
