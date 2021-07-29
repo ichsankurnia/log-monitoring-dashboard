@@ -127,11 +127,11 @@ const ModalSetImage = ({onSetPicBefore, onSetPicAfter}) => {
         <Row gutter={16}>
             <Col span={12} style={{display: "flex", flexDirection: 'column'}}>
                 <label>Pic Before : </label>
-                <input type="file" onChange={(e) => handleChange(e, "img-before")} ref={fiImgBefore} />
+                <input type="file" onChange={(e) => handleChange(e, "img-before")} ref={fiImgBefore} style={{alignSelf: 'center', marginTop: 10}} />
             </Col>
             <Col span={12} style={{display: "flex", flexDirection: 'column'}}>
                 <label>Pic After : </label>
-                <input type="file" onChange={(e) => handleChange(e, "img-after")} ref={fiImgAfter} />
+                <input type="file" onChange={(e) => handleChange(e, "img-after")} ref={fiImgAfter} style={{alignSelf: 'center', marginTop: 10}} />
             </Col>
         </Row>
     )
