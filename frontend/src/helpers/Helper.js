@@ -8,6 +8,14 @@ class Helper {
             reader.readAsDataURL(blob)
         }
     ))
+
+    static getASCIIAsBase64 = (buffer) => {
+        try {
+            return new Buffer.from(buffer).toString('ascii')
+        } catch (error) {
+            return buffer
+        }
+    }
 }
 
 export default Helper
