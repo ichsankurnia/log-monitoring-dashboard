@@ -90,6 +90,19 @@ class TroubleETController {
         }
     }
 
+    static getListDocumentation = async (req, res) => {
+        try {
+            const data = await TroubleET.findDocumentation()
+            if(data){
+                return res.json(response(0, 'success get documentation trouble', data))
+            }else{
+                return res.json(response(575, 'fail get documentation trouble et', null))
+            }
+        } catch (error) {
+            return res.json(response(475, error.message, null))
+        }
+    }
+
     static getNoTicket = async (prefix) => {
         try {
             const data = await TroubleET.noTicket(prefix[2])
