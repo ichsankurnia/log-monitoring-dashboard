@@ -65,4 +65,15 @@ export const deleteTroubleET = async (ticketNum) => {
 }
 
 
+export const getListDocumentation = async () => {
+    try {
+        const data = await api.get('/api/troubleet-documentation')
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))
+    }
+}
+
+
 export default api
