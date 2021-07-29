@@ -109,6 +109,40 @@ class TroubleET {
         }
     }
 
+    static findDocumentation = async () => {
+        const sql = `
+        SELECT 
+            no, tanggal_masalah, tanggal_done, 
+            PROJ.no_projek, PROJ.nama_projek, 
+            LOK.ip, LOK.nama_stasiun, 
+            PER.no_perangkat, PER.nama_perangkat, PER.id as id_perangkat,
+            PART.no_pvm, PART.nama_perangkat as nama_part,
+            problem, solusi, pic_before, pic_after
+        FROM public.trouble_et 
+        LEFT JOIN public.projek as PROJ
+            ON PROJ.no_projek = public.trouble_et.no_projek
+        LEFT JOIN public.stasiun as LOK
+            ON LOK.ip = public.trouble_et.ip
+        LEFT JOIN public.et as PER
+            ON PER.no_perangkat = public.trouble_et.no_perangkat
+        LEFT JOIN public.perangkat_vm as PART
+            ON PART.no_pvm = public.trouble_et.no_pvm
+        WHERE pic_before IS NOT NULL 
+            OR pic_after IS NOT NULL
+        ORDER BY tanggal_done desc
+        `
+        console.log(sql)
+        
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
+
+    }
+
     static noTicket = async (noProjek) => {
         const sql = `
             SELECT max(right(no, 9)) 
