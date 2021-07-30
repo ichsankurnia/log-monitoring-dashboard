@@ -94,7 +94,25 @@ class TroubleETController {
         try {
             const data = await TroubleET.findDocumentation()
             if(data){
-                return res.json(response(0, 'success get documentation trouble', data))
+                let result = []
+                data.forEach(item => {
+                    let obj = {
+                        no: item.no,
+                        tanggal_masalah: item.tanggal_masalah,
+                        tanggal_done: item.tanggal_done,
+                        nama_projek: item.nama_projek,
+                        nama_stasiun: item.nama_stasiun,
+                        nama_perangkat: item.nama_perangkat,
+                        id_perangkat: item.id_perangkat,
+                        problem: item.problem,
+                        solusi: item.solusi,
+                        nama_part: item.nama_part,
+                        pic_before: item.pic_before.length > 300000? false : item.pic_before,
+                        pic_after: item.pic_after.length > 300000? false : item.pic_after
+                    }
+                    result.push(obj)
+                });
+                return res.json(response(0, 'success get documentation trouble', result))
             }else{
                 return res.json(response(575, 'fail get documentation trouble et', null))
             }
