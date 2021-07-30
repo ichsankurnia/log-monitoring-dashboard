@@ -94,7 +94,9 @@ class Sidebar extends Component {
                         <Link to="/admin/data-log">Data Log</Link>
                     </Menu.Item>
                     <SubMenu key="export" title="Export" icon={<ExportOutlined />}>
-                        <Menu.Item key="expDocumentation" icon={<VideoCameraOutlined />}>Dokumentasi</Menu.Item>
+                        <Menu.Item key="expDocumentation" icon={<VideoCameraOutlined />}>
+                            <Link to="/admin/export/documentation">Dokumentasi</Link>
+                        </Menu.Item>
                         <Menu.Item key="expData" icon={<ExportOutlined />}>Export Data</Menu.Item>
                         <Menu.Item key="expCountData" icon={<FieldBinaryOutlined />}>Count Data</Menu.Item>
                     </SubMenu>
