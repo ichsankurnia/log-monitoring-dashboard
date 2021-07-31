@@ -125,7 +125,8 @@ class UserSocket{
 
             const addData = await User.create(payload)
             if(addData){
-                const data = User.findAll()
+                const data = await User.findAll()
+                console.log(data)
                 return response(1, 'success add new user', data)
             }else{
                 return response(501, 'fail add new user', null)
@@ -154,7 +155,7 @@ class UserSocket{
             
             const editData = await User.update({no_user: parseInt(prefix[2])}, payload)
             if(editData){
-                const data = User.findAll()
+                const data = await User.findAll()
                 return response(2, 'success edit user', data)
             }else{
                 return response(502, 'fail edit user', null)
@@ -174,7 +175,7 @@ class UserSocket{
             const deleteData = await User.delete({no_user: parseInt(prefix[2])})
             
             if(deleteData){
-                const data = User.findAll()
+                const data = await User.findAll()
                 return response(3, 'success delete user', data)
             }else{
                 return response(503, 'fail delete user', null)
