@@ -1,35 +1,57 @@
 import React from 'react'
-
-import { Table, Popconfirm, Space } from 'antd';
+import { Table, Popconfirm, Button } from 'antd';
 import FormAddUser from '../form/FormAddUser';
+import SocketContext from '../../context/SocketProvider';
+import Helper from '../../helpers/Helper';
 
-const data = [];
 
-for (let i = 1; i < 46; i++) {
-    if(i%2 === 0){
-        data.push({
-            key: i,
-            name: `Ichsan King ${i}`,
-            age: 32,
-            address: `Makkah, Park Lane no. ${i}`,
-        });
-    }else{
-        data.push({
-            key: i,
-            name: `Mute queen ${i}`,
-            age: 32,
-            address: `Madinah, Park Lane no. ${i}`,
-        });
-    }
-}
+var socket = null
 
 class DataUser extends React.Component {
-    state = {
-        filteredInfo: null,
-        sortedInfo: null,
-        showEditForm: false,
-        rowDataSelected: null
-    };
+    static contextType = SocketContext
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            dataTable: [],
+            filteredInfo: null,
+            sortedInfo: null,
+            showForm: false,
+            rowDataSelected: {},
+            isUpdate: false,
+            no_user: 0
+        }
+    }
+
+    componentDidMount(){
+        socket = this.context
+        if(socket){
+            socket.emit('request', 'user_get')
+            this.handleSocketEvent()
+        }else{
+            this.toReconSocket = setTimeout(() => {
+                this.componentDidMount()
+            }, 1000);
+        }
+    }
+
+    componentWillUnmount(){
+        clearTimeout(this.toReconSocket)
+        socket.off('response')
+        socket = null
+    }
+
+    handleSocketEvent = () => {
+        socket.on('response', (res) => {
+            console.log(res)
+            if(res.code === 0 || res.code === 1 || res.code === 2 || res.code === 3){
+                this.setState({dataTable: res.data})
+            }else{
+                alert(res.message)
+            }
+        })
+    }
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -39,100 +61,143 @@ class DataUser extends React.Component {
         });
     };
 
-    handleEdit = (data) => {
-        this.setState({rowDataSelected: data, showEditForm: true})
+    handleEditData = (data) => {
+        this.setState({rowDataSelected: data, showForm: true, isUpdate: true, no_user: data.no_user})
     }
 
-    handleDelete = (data) => {
-        console.log(data)
+    handleDeleteData = (data) => {
+        socket.emit('request', `user_delete_${data.no_user}`)
+    }
+    
+    handleAddData = () => {
+        this.setState({rowDataSelected: null, showForm: true, isUpdate: false})
     }
 
-    render() {
-        let { sortedInfo, filteredInfo } = this.state;
+    handleSubmitData = (submittedData) => {
+        const { nama_user, username, password, alamat, telepon, status, b_active } = submittedData
+        if(!this.state.isUpdate){
+            console.log("SUBMIT ADD DATA", submittedData)
+            socket.emit('request', `user_add_${Helper.capitalEachWord(nama_user)}_${username}_${password}_${alamat}_${telepon}_${status}`)
+        }else{
+            console.log("SUBMIT EDIT DATA", submittedData)
+            socket.emit('request', `user_edit_${this.state.no_user}_${Helper.capitalEachWord(nama_user)}_${username}_${password}_${alamat}_${telepon}_${status}_${b_active}`)
+        }
+        this.setState({showForm: false})
+    }
+
+
+    handleClose = () => {
+        this.setState({showForm: false})
+    }
+
+    render(){
+        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
-        
+
         const columns = [
             {
-                title: 'Name',
-                dataIndex: 'name',
-                key: 'name',
+                title: "No User",
+                dataIndex: "no_user",
+                key: 'no_user',
+                sorter: (a, b) => a.no_user - b.no_user,
+                sortOrder: sortedInfo.columnKey === 'no_user' && sortedInfo.order,
+            },
+            {
+                title: "Nama User",
+                dataIndex: "nama_user",
+                key: 'nama_user',
+                sorter: (a, b) => a.nama_user.localeCompare(b.nama_user),
+                sortOrder: sortedInfo.columnKey === 'nama_user' && sortedInfo.order,
+            },
+            {
+                title: "Username",
+                dataIndex: "username",
+                key: 'username',
+                sorter: (a, b) => a.username.localeCompare(b.username),
+                sortOrder: sortedInfo.columnKey === 'username' && sortedInfo.order,
+            },
+            {
+                title: "Password",
+                dataIndex: "password",
+                key: 'password',
+                render: (data) => 
+                    <b>{"*".repeat(data.length)}</b>
+            },
+            {
+                title: "Alamat",
+                dataIndex: "password",
+                key: 'password',
+            },
+            {
+                title: "Telepon",
+                dataIndex: "telepon",
+                key: 'telepon',
+            },
+            {
+                title: "Status",
+                dataIndex: "status",
+                key: 'status',
                 filters: [
-                    { text: 'Ichsan', value: 'Ichsan' },
-                    { text: 'Ories', value: 'Ories' },
+                    { text: 'ADMIN', value: 'Admin' },
+                    { text: 'BACK-END', value: 'Backend' },
                 ],
-                filteredValue: filteredInfo.name || null,
-                onFilter: (value, record) => record.name.includes(value),
-                sorter: (a, b) => a.name.length - b.name.length,
-                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
-                ellipsis: true,
+                filteredValue: filteredInfo.status || null,
+                onFilter: (value, record) => record.status.includes(value)
             },
             {
-                title: 'Age',
-                dataIndex: 'age',
-                key: 'age',
-                sorter: (a, b) => a.age - b.age,
-                sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
-                ellipsis: true,
-            },
-            {
-                title: 'Address',
-                dataIndex: 'address',
-                key: 'address',
+                title: "Active",
+                dataIndex: 'b_active',
+                key: 'b_active',
                 filters: [
-                    { text: 'Makkah', value: 'Makkah' },
-                    { text: 'Madinah', value: 'Madinah' },
+                    { text: 'Active', value: 't' },
+                    { text: 'Non Active', value: 'f' },
                 ],
-                filteredValue: filteredInfo.address || null,
-                onFilter: (value, record) => record.address.includes(value),
-                sorter: (a, b) => a.address.length - b.address.length,
-                sortOrder: sortedInfo.columnKey === 'address' && sortedInfo.order,
-                ellipsis: true,
+                filteredValue: filteredInfo.b_active || null,
+                onFilter: (value, record) => {
+                    return record.b_active.includes(value)
+                }
             },
             {
-                title: 'Action',
-                key: 'operation',
+                title: "Action",
                 fixed: 'right',
-                width: 100,
-                render: (rowData) =>
-                    data.length >= 1 ? (
-                        <>
-                            <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEdit(rowData)}>Edit</span>&nbsp;&nbsp;
-                            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(rowData)}>
-                                <span style={{cursor: 'pointer', color: "#39f"}}>Delete</span>
-                            </Popconfirm>
-                        </>
-                    ) : null,
-                // render: () => 
-                // <>
-                //     <span style={{cursor: 'pointer', color: "#39f"}}>Edit</span>&nbsp;&nbsp;
-                //     <span style={{cursor: 'pointer', color: "#39f"}}>Delete</span>
-                // </>
-            },
-        ];
+                render: (dataSelected) => 
+                    dataTable.length > 1 &&
+                    <>
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
+                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                        </Popconfirm>
+                    </>
+                
+            }
+        ]
 
         return (
             <>
-                <FormAddUser 
-                    visible={this.state.showEditForm} 
-                    onClose={() => this.setState({showEditForm: false})}
-                    data={this.state.rowDataSelected}
+            <div>
+                <h1>Data User</h1>
+                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New User</Button>
+                <Table 
+                    rowKey='no_user'
+                    columns={columns}
+                    dataSource={dataTable}
+                    onChange={this.handleChange}
+                    pagination={{ pageSize: 7 }} 
+                    scroll={{x: 'max-content'}}
+                    // scroll={{ y: 380 }}
+                    // pagination={{ pageSize: 20 }}
+                    size="small"
                 />
-                <div style={{padding: 20}}>
-                    <Space style={{ marginBottom: 16 }}>
-                        Data User
-                    </Space>
-                    <Table
-                        columns={columns} 
-                        dataSource={data} 
-                        onChange={this.handleChange}
-                        // scroll={{ y: 380 }}
-                        // pagination={{ pageSize: 20 }} 
-                        size="small"
-                    />
-                </div>
+            </div>
+            <FormAddUser
+                visible={showForm}
+                data={rowDataSelected} 
+                onClose={this.handleClose} 
+                onSubmit={this.handleSubmitData}
+                />
             </>
-        );
+        )
     }
 }
 
