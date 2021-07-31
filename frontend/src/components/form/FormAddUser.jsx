@@ -1,95 +1,88 @@
 import React from 'react'
-import { Drawer, Form, Button, Col, Row, Input, Select, DatePicker } from 'antd';
+import { Drawer, Form, Button, Input, Select } from 'antd';
 import PropTypes from 'prop-types';
+import TextArea from 'antd/lib/input/TextArea';
 
 
-const { Option } = Select;
+const { Option } = Select
 
-const FormAddUser = ({onClose, visible, data}) => {
-    console.log(data)
-    
+const FormAddUser = ({onClose, onSubmit, visible, data}) => {
+    const [form] = Form.useForm();
+
+    React.useEffect(() => {
+        if(data){
+            form.setFieldsValue(data)
+        }else{
+            form.resetFields()
+        }
+    }, [data, form])
+
+    const handleSubmit = () => {
+        const payload = {
+            nama_user: form.getFieldValue('nama_user') || "",
+            username: form.getFieldValue('username') || "",
+            password: form.getFieldValue('password') || "",
+            alamat: form.getFieldValue('alamat') || "",
+            telepon: form.getFieldValue('telepon') || "",
+            status: form.getFieldValue('status') || "",
+            b_active: form.getFieldValue('b_active') || "t"
+        }
+
+        onSubmit(payload)
+        form.resetFields()
+    }
+
     return (
         <>
             <Drawer
-                title="Create a new account"
-                width={720}
+                title= {data? "Update User" : "Create New User"  }
+                width={360}
+                placement="right"
                 onClose={onClose}
                 visible={visible}
                 bodyStyle={{ paddingBottom: 80 }}
+                forceRender
                 footer={
                     <div style={{ textAlign: 'right', }}>
                         <Button onClick={onClose} style={{ marginRight: 8 }}>
                             Cancel
                         </Button>
-                        <Button onClick={onClose} type="primary">
+                        <Button onClick={handleSubmit} type="submit">
                             Submit
                         </Button>
                     </div>
                 }
             >
-                <Form layout="vertical" hideRequiredMark>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter user name' }]}>
-                            <Input placeholder="Please enter user name" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name="url" label="Url" rules={[{ required: true, message: 'Please enter url' }]} >
-                            <Input style={{ width: '100%' }} addonBefore="http://" addonAfter=".com" placeholder="Please enter url" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="owner" label="Owner" rules={[{ required: true, message: 'Please select an owner' }]} >
-                            <Select placeholder="Please select an owner">
-                                <Option value="xiao">Xiaoxiao Fu</Option>
-                                <Option value="mao">Maomao Zhou</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name="type" label="Type" rules={[{ required: true, message: 'Please choose the type' }]} >
-                            <Select placeholder="Please choose the type">
-                                <Option value="private">Private</Option>
-                                <Option value="public">Public</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="approver" label="Approver" rules={[{ required: true, message: 'Please choose the approver' }]} >
-                            <Select placeholder="Please choose the approver">
-                                <Option value="jack">Jack Ma</Option>
-                                <Option value="tom">Tom Liu</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name="dateTime" label="DateTime" rules={[{ required: true, message: 'Please choose the dateTime' }]} >
-                            <DatePicker.RangePicker
-                                style={{ width: '100%' }}
-                                getPopupContainer={trigger => trigger.parentElement}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item name="description" label="Description" rules={[
-                            {
-                            required: true,
-                            message: 'please enter url description',
-                            },
-                        ]}
-                        >
-                            <Input.TextArea rows={4} placeholder="please enter url description" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
+                <Form form={form} layout="vertical" hideRequiredMark>
+                    <Form.Item name="nama_user" label="Full Name" rules={[{ required: true, message: 'Please enter fullname' }]}>
+                        <Input placeholder="Please enter fullname" />
+                    </Form.Item>
+                    <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter username' }]}>
+                        <Input placeholder="Please enter username" />
+                    </Form.Item>
+                    <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter password' }]}>
+                        <Input placeholder="Please enter password" />
+                    </Form.Item>
+                    <Form.Item name="alamat" label="Address" rules={[{ message: 'Please enter address' }]}>
+                        <TextArea placeholder="Please enter alamat" autoSize />
+                    </Form.Item>
+                    <Form.Item name="telepon" label="Phone Number" rules={[{ message: 'Please enter phone number' }]}>
+                        <Input placeholder="Please enter telepon" />
+                    </Form.Item>
+                    <Form.Item name="status" label="Status" rules={[{ message: 'Please choose the status' }]}>
+                        <Select>
+                            <Option key="Admin">ADMIN</Option>
+                            <Option key="Backend">BACK-END</Option>
+                        </Select>
+                    </Form.Item>
+                    {data &&
+                    <Form.Item name="b_active" label="Active">
+                        <Select>
+                            <Option key="t">Active - t</Option>
+                            <Option key="f">Non Active - f</Option>
+                        </Select>
+                    </Form.Item>}
+                </Form>
             </Drawer>
         </>
     );
@@ -97,7 +90,9 @@ const FormAddUser = ({onClose, visible, data}) => {
 
 FormAddUser.propTypes = {
     visible: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    data: PropTypes.object
 };
 
 export default FormAddUser
