@@ -12,6 +12,27 @@ const api = axios.create({
     }
 })
 
+export const authLogin = async (payload) => {
+    try {
+        const data = await api.post('/api/auth/login', payload)
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))  
+    }
+}
+
+export const authLogout = async (payload) => {
+    try {
+        console.log(payload)
+        const data = await api.post('/api/auth/logout', payload)
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))  
+    }
+}
+
 export const getAllTroubleET = async () => {
     try {
         const data = await api.get('/api/troubleet')

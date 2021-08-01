@@ -44,7 +44,7 @@ class Login {
         try {
             const result = await db.query(sql)
             if(result.rowCount > 0){
-                return findLogin
+                return this.findOne(identity)
             }else{
                 return false
             }
