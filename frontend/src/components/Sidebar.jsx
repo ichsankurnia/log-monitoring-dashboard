@@ -21,6 +21,10 @@ import {
 
 import SubMenu from 'antd/lib/menu/SubMenu';
 import { Link, withRouter } from 'react-router-dom';
+import { authLogout } from '../api';
+import jwtDecode from 'jwt-decode';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 
 class Sidebar extends Component {
@@ -42,12 +46,21 @@ class Sidebar extends Component {
         console.log('click ', e);
     };
 
-    handleLogout = () => {
-        // this.props.history.push('/auth')
-        window.location.reload()
+    handleLogout = async () => {
+        try {
+            const user = jwtDecode(localStorage.getItem('authToken'))
+            const res = await authLogout({no_user: user.no_user})
+            console.log('logout :', res)
+
+            localStorage.clear()
+            this.props.history.push('/auth')
+        } catch (error) {
+            alert(error)
+        }
     }
 
     render() {
+        const {user} = this.props
         return (
             <Menu
                 onClick={this.handleClick}
@@ -60,6 +73,7 @@ class Sidebar extends Component {
                         Dashboard
                     </Link>
                 </Menu.Item>
+                {user?.status?.toLowerCase() === 'admin' &&
                 <SubMenu key="admin" icon={<MenuOutlined />} title="Admin Configuration">
                     <Menu.Item key="user" icon={<UserOutlined />}>
                         <Link to="/admin/data-user">Data User</Link>
@@ -88,7 +102,8 @@ class Sidebar extends Component {
                             <Link to="/admin/data-lokasi">Data Lokasi</Link>
                         </Menu.Item>
                     </Menu.ItemGroup>
-                </SubMenu>
+                </SubMenu> 
+                }
                 <SubMenu key="datalog" icon={<AppstoreOutlined />} title="Data Log">
                     <Menu.Item key="log" icon={<DatabaseOutlined />}>
                         <Link to="/admin/data-log">Data Log</Link>
@@ -107,8 +122,8 @@ class Sidebar extends Component {
                     </SubMenu>
                 </SubMenu>
                 <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={this.handleLogout}>
-                    <Link to="/auth">Logout</Link>
-                    {/* Logout */}
+                    {/* <Link to="/auth">Logout</Link> */}
+                    Logout
                 </Menu.Item>
             </Menu>
         // return (
@@ -152,4 +167,13 @@ class Sidebar extends Component {
     }
 }
 
-export default withRouter(Sidebar)
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default compose(
+    withRouter,
+    connect(mapStateToProps, null)
+)(Sidebar)
