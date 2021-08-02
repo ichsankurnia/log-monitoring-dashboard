@@ -7,6 +7,7 @@ import Checkbox from 'antd/lib/checkbox/Checkbox';
 import ExportExcel from '../../helpers/ExportExcel';
 import ModalSetImage from '../modal/ModalSetImage';
 import Helper from '../../helpers/Helper';
+import { connect } from 'react-redux';
 
 const { Option } = Select;
 
@@ -132,7 +133,7 @@ class FormTroubleET extends React.Component {
                             problem: payload['problem']
                         }
 
-                        const fileXLS = await ExportExcel.exportFormAduan('username', dataXLS)
+                        const fileXLS = await ExportExcel.exportFormAduan(this.props.user, dataXLS)
 
                         submitedData.is_send_email = true
                         submitedData.desc = `${part} ${perangkat.nama_perangkat} ${lokasi}`
@@ -151,18 +152,30 @@ class FormTroubleET extends React.Component {
                     }
                 }else if(res.code === 77){
                     this.formRef.current.setFieldsValue({'no': moment().format('yyyyMMDD') + res.data.ticket_number})
-                }else if(res.code === 10){
-                    this.setState({projek: res.data, loading: false})
-                }else if(res.code === 20){
-                    this.setState({lokasi: res.data.filter(data => data.no_projek === this.formRef.current.getFieldValue('no_projek')), loading: false})
-                }else if(res.code === 30){
-                    this.setState({perangkat: res.data.filter(data => data.ip === this.formRef.current.getFieldValue('ip')), loading: false})
-                }else if(res.code === 40){
-                    this.setState({part: res.data, loading: false})
-                }else if(res.code === 50){
-                    this.setState({penyebab: res.data.filter(data => data.no_pvm === this.formRef.current.getFieldValue('no_pvm')), loading: false})
-                }else if(res.code === 60){
-                    this.setState({solusi: res.data.filter(data => data.no_penyebab === this.formRef.current.getFieldValue('no_penyebab')), loading: false})
+                }else if(res.code === 10){                                                                                      // GET PROJEK
+                    this.setState({projek: res.data.filter(data => data.b_active === 't'), loading: false})
+                }else if(res.code === 20){                                                                                      // GET LOKASI/STASIUN
+                    this.setState({
+                        lokasi: res.data.filter(data => data.no_projek === this.formRef.current.getFieldValue('no_projek') && data.b_active === 't'),
+                        loading: false
+                    })
+                }else if(res.code === 30){                                                                                      // GET PERANGKAT
+                    this.setState({
+                        perangkat: res.data.filter(data => data.ip === this.formRef.current.getFieldValue('ip') && data.b_active === 't'),
+                        loading: false
+                    })
+                }else if(res.code === 40){                                                                                      // GET PART
+                    this.setState({part: res.data.filter(data => data.b_active === 't'), loading: false})
+                }else if(res.code === 50){                                                                                      // GET PENYEBAB
+                    this.setState({
+                        penyebab: res.data.filter(data => data.no_pvm === this.formRef.current.getFieldValue('no_pvm') && data.b_active === 't'),
+                        loading: false
+                    })
+                }else if(res.code === 60){                                                                                      // GET SOLUSI
+                    this.setState({
+                        solusi: res.data.filter(data => data.no_penyebab === this.formRef.current.getFieldValue('no_penyebab') && data.b_active === 't'),
+                        loading: false
+                    })
                 }
             })
         }
@@ -191,10 +204,10 @@ class FormTroubleET extends React.Component {
             alert("Fail to set ticket ID, Ticket ID is empty ")
             return false
         }else if(!downtime){
-            alert("Downtime Start End date is required")
+            alert("Downtime Start End Date is required")
             return false
         }else if(!ticketKind){
-            alert("ticket kind is required")
+            alert("Ticket kind is required")
             return false
         }else if(!location) {
             alert("Location is required")
@@ -480,4 +493,12 @@ FormTroubleET.propTypes = {
     data: PropTypes.object
 };
 
-export default FormTroubleET
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+
+export default connect(mapStateToProps, null)(FormTroubleET)
