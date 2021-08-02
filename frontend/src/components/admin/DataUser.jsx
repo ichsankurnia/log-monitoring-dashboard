@@ -3,6 +3,7 @@ import { Table, Popconfirm, Button } from 'antd';
 import FormAddUser from '../form/FormAddUser';
 import SocketContext from '../../context/SocketProvider';
 import Helper from '../../helpers/Helper';
+import { connect } from 'react-redux';
 
 
 var socket = null
@@ -38,8 +39,10 @@ class DataUser extends React.Component {
 
     componentWillUnmount(){
         clearTimeout(this.toReconSocket)
-        socket.off('response')
-        socket = null
+        if(socket){
+            socket.off('response')
+            socket = null
+        }
     }
 
     handleSocketEvent = () => {
@@ -95,6 +98,8 @@ class DataUser extends React.Component {
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
+        const { user } = this.props
+
         const columns = [
             {
                 title: "No User",
@@ -126,8 +131,8 @@ class DataUser extends React.Component {
             },
             {
                 title: "Alamat",
-                dataIndex: "password",
-                key: 'password',
+                dataIndex: "alamat",
+                key: 'alamat',
             },
             {
                 title: "Telepon",
@@ -162,13 +167,15 @@ class DataUser extends React.Component {
                 title: "Action",
                 fixed: 'right',
                 render: (dataSelected) => 
-                    dataTable.length > 1 &&
+                    dataTable.length > 1?
+                    user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
                     <>
                         <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
                             <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
                         </Popconfirm>
                     </>
+                    : null : null
                 
             }
         ]
@@ -201,4 +208,10 @@ class DataUser extends React.Component {
     }
 }
 
-export default DataUser
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(DataUser)

@@ -6,6 +6,7 @@ import React from "react"
 import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
 import ExportExcel from "../../helpers/ExportExcel";
+import { connect } from "react-redux";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -132,7 +133,7 @@ class TroubleET extends React.Component {
     }
 
     handleExportListTrouble = () => {
-        ExportExcel.exportListTroubleET(this.state.dataTable)
+        ExportExcel.exportListTroubleET(this.props.user, this.state.dataTable)
     }
 
 
@@ -285,7 +286,7 @@ class TroubleET extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: 9 }}
+                        pagination={{ pageSize: 8 }}
                         scroll={{x: 'max-content'}}
                         size='small'
                         // searchableProps={{ fuzzySearch: true }}
@@ -313,4 +314,11 @@ class TroubleET extends React.Component {
     }
 }
 
-export default TroubleET
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(TroubleET)

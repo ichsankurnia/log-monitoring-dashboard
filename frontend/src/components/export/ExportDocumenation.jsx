@@ -7,6 +7,7 @@ import { deleteTroubleET, getDetailTroubleET, getListDocumentation, updateTroubl
 import FormTroubleET from "../form/FormTroubleET"
 import ExportExcel from "../../helpers/ExportExcel";
 import Helper from "../../helpers/Helper";
+import { connect } from "react-redux";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -119,7 +120,7 @@ class ExportDocumentation extends React.Component {
 
     handleExportListTrouble = async () => {
         this.setState({showLoader: true})
-        await ExportExcel.exportDocumentation(this.state.dataTable)
+        await ExportExcel.exportDocumentation(this.props.user, this.state.dataTable)
         this.setState({showLoader: false})
     }
 
@@ -271,4 +272,10 @@ class ExportDocumentation extends React.Component {
     }
 }
 
-export default ExportDocumentation
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(ExportDocumentation)
