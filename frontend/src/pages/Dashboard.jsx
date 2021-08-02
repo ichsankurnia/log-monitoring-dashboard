@@ -1,13 +1,36 @@
 import { Breadcrumb, Layout } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+import { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 import Sidebar from '../components/Sidebar';
+import { setUserData } from '../redux/action/actions';
 import routes from '../routes';
 
 const { Header, Footer, Sider, Content } = Layout;
 
-const Dashboard = () => {
+const Dashboard = ({setUserData}) => {
+    const history = useHistory()
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken')
+        if(token){
+            const decode = jwtDecode(token)
+            const currentTime = Date.now() / 1000;
+            if(decode.exp < currentTime){
+				localStorage.clear()
+                history.push('/auth')
+			}else{
+                setUserData(decode)
+            }
+        }else{
+            localStorage.clear()
+            history.push('/auth')
+        }
+    }, [history, setUserData])
 
     // MAIN ROUTE
 	const getRoutes = (routes) => {
@@ -53,4 +76,14 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+// const mapStateToProps = (state) => {
+//     return {
+//         rxState: state
+//     }
+// }
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({setUserData}, dispatch)
+}
+
+export default connect(null, mapDispatchToProps)(Dashboard)
