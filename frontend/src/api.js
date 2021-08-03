@@ -24,7 +24,6 @@ export const authLogin = async (payload) => {
 
 export const authLogout = async (payload) => {
     try {
-        console.log(payload)
         const data = await api.post('/api/auth/logout', payload)
         return data
     } catch (error) {
