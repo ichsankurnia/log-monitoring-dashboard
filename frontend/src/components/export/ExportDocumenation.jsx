@@ -1,29 +1,39 @@
-import { Popconfirm, Button, Spin, DatePicker } from "antd"
-import { Table } from "ant-table-extensions";
-import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
-import moment from "moment"
 import React from "react"
-import { deleteTroubleET, getDetailTroubleET, getListDocumentation, updateTroubleET } from "../../api"
-import FormTroubleET from "../form/FormTroubleET"
+import moment from "moment"
+import { connect } from "react-redux";
+import { Button, Spin, DatePicker, Select } from "antd"
+import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Table } from "ant-table-extensions";
+
+import SocketContext from "../../context/SocketProvider";
+import { getListDocumentation } from "../../api"
+
 import ExportExcel from "../../helpers/ExportExcel";
 import Helper from "../../helpers/Helper";
-import { connect } from "react-redux";
+import Modal from "antd/lib/modal/Modal";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
+var socket = null
 class ExportDocumentation extends React.Component {
-
+    static contextType = SocketContext
     constructor(props){
         super(props)
 
         this.state = {
             allData: [],
             dataTable: [],
+            filterTable: {},
+
+            dataProjek: [],
+            dataPerangkat: [],
+
             filteredInfo: null,
             sortedInfo: null,
-            showForm: false,
             showLoader: false,
-            rowDataSelected: {}
+            showModalImg: false,
+            
+            imgSelected: null
         }
     }
 
@@ -42,26 +52,42 @@ class ExportDocumentation extends React.Component {
 
     componentDidMount(){
         this.handleGetAllData()
-    }
 
-
-    handleGetDetailTrouble = async (ticketNum) => {
-        this.setState({showLoader: true})
-        const res = await getDetailTroubleET(ticketNum)
-
-        console.log('GET Detail Trouble ET :', res)
-        if(res.data){
-            if(res.data.code === 0){
-                this.setState({rowDataSelected: res.data.data})
-            }else{
-                return false
-            }
+        socket = this.context
+        if(socket){
+            socket.emit('request', 'projek_get')
+            socket.emit('request', 'perangkat_get')
+            socket.emit('request', 'penyebab_get')
+            this.handleSocketEvent()
         }else{
-            return false
+            this.toReconSocket = setTimeout(() => {
+                this.componentDidMount()
+            }, 1000);
         }
-        return true
     }
 
+    handleSocketEvent = () => {
+        socket.on('response', (res) => {
+            console.log(res)
+            if(res.code === 10){
+                this.setState({dataProjek: res.data})
+            }else if(res.code === 30){
+                this.setState({dataPerangkat: res.data})
+            }else if(res.code === 50){
+                this.setState({dataPenyebab: res.data})
+            }else{
+                alert(res.message)
+            }
+        })
+    }
+
+    componentWillUnmount(){
+        clearTimeout(this.toReconSocket)
+        if(socket){
+            socket.off('response')
+            socket = null
+        }
+    }
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -71,51 +97,68 @@ class ExportDocumentation extends React.Component {
         });
     };
 
-    handleEditData = async (data) => {
-        const getDetail = await this.handleGetDetailTrouble(data.no)
-        if(getDetail){
-            this.setState({showForm: true, showLoader: false})
+
+    filterByTanggalDone = (date) => {
+        const filter = {...this.state.filterTable}
+        if(date && date[0] && date[1]){
+            filter.tanggal_done = date
         }else{
-            alert('cannot get detail trouble et')
+            delete filter.tanggal_done
         }
+
+        this.setState({filterTable: filter}, () => {
+            this.handleFilterDataTable()
+        })
     }
 
-    handleDeleteData = async (data) => {
-        const res = await deleteTroubleET(data.no)
-        
-        console.log('Delete TroubleET :', res)
-        if(res.data?.code === 0){
-            this.handleGetAllData()
+
+    filterByItem = (value, key) => {
+        const filter = {...this.state.filterTable}
+        if(value && value !== "null" && value !== null){
+            filter[key] = value
         }else{
-            alert('fail deleting ticket')
+            delete filter[key]
         }
+
+        this.setState({filterTable: filter}, () => {
+            this.handleFilterDataTable()
+        })
     }
     
-    handleSubmitData = async (ticketNum, submittedData) => {
-        this.setState({showLoader: true})
-        const res = await updateTroubleET(ticketNum, submittedData.data)
+    handleFilterDataTable = () => {
+        console.log(this.state.filterTable)
 
-        console.log('Update  TroubleET :', res)
-        if(res.data?.code !== 0){
-            alert('Update TroubleET failed')
-        }
-        
-        this.setState({showForm: false})
-        this.handleGetAllData()
-    }
-
-
-    filterByTanggalDone = (date, param) => {
         let dataTable = [...this.state.allData]
         let result = []
-        if(date && date[0] && date[1]){
-            result = dataTable.filter(res => {
-                return moment(res[param], moment(res[param]).creationData().format).isBetween(date[0], date[1])
+
+        const {filterTable} = this.state
+        if(Object.keys(filterTable).length > 0){
+            let x = 0
+            Object.keys(filterTable).forEach(key => {
+                x += 1
+                if(x > 1){
+                    if(key === "tanggal_done"){
+                        result = result.filter(data =>
+                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
+                        )
+                    }else{
+                        result = result.filter(data => data[key] === filterTable[key])
+                    }
+                }else{
+                    if(key === "tanggal_done"){
+                        result = dataTable.filter(data =>
+                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
+                        )
+                    }else{
+                        result = dataTable.filter(data => data[key] === filterTable[key])
+                    }
+                }
             })
-            this.setState({dataTable: result})
         }else{
-            this.setState({dataTable: this.state.allData})
+            result = this.state.allData
         }
+
+        this.setState({dataTable: result})
     }
 
     handleExportListTrouble = async () => {
@@ -124,13 +167,12 @@ class ExportDocumentation extends React.Component {
         this.setState({showLoader: false})
     }
 
-
-    handleClose = () => {
-        this.setState({showForm: false})
+    handleClickImage = (imgBuffer) => {
+        this.setState({showModalImg: true, imgSelected: Helper.getASCIIAsBase64(imgBuffer)})
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, showLoader, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showLoader, dataProjek, dataPerangkat } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};                                                                                          // eslint-disable-line no-unused-vars
 
@@ -194,7 +236,7 @@ class ExportDocumentation extends React.Component {
                 key: 'pic_before',
                 render: (data) =>
                     data?
-                    <img src={Helper.getASCIIAsBase64(data)} alt='' width={200} height={150} /> :
+                    <img src={Helper.getASCIIAsBase64(data)} alt='' width={200} height={150} style={{cursor: 'pointer'}} onClick={() => this.handleClickImage(data)} /> :
                     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'red'}}>
                         <img src="" alt='' width={100} height={50} />
                         <p>File too large, cannot load the image!</p>
@@ -211,7 +253,7 @@ class ExportDocumentation extends React.Component {
                 key: 'pic_after',
                 render: (data) =>
                     data?
-                    <img src={Helper.getASCIIAsBase64(data)} alt='' width={200} height={150} /> :
+                    <img src={Helper.getASCIIAsBase64(data)} alt='' width={200} height={150} style={{cursor: 'pointer'}} onClick={() => this.handleClickImage(data)} /> :
                     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'red'}}>
                         <img src="" alt='' width={100} height={50} />
                         <p>File too large, cannot load the image!</p>
@@ -221,19 +263,6 @@ class ExportDocumentation extends React.Component {
                 title: "Jenis Pergantian",
                 dataIndex: "nama_part",
                 key: 'nama_part'
-            },
-            {
-                title: "Action",
-                fixed: 'right',
-                render: (dataSelected) => 
-                    dataTable.length > 1 &&
-                    <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
-                        </Popconfirm>
-                    </>
-                
             }
         ]
 
@@ -242,10 +271,22 @@ class ExportDocumentation extends React.Component {
             <div>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1>Documentation Trouble ET</h1>
-                    <label>Filter By Tanggal Masalah</label>
-                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_masalah')} />
                     <label>Filter By Tanggal Done</label>
                     <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                    <label>Projek</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        {dataProjek?.map(data => 
+                            <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
+                        )}
+                    </Select>
+                    <label>Perangkat</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        {dataPerangkat?.map(data => 
+                            <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
+                        )}
+                    </Select>
                     <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble}>
                         Export
                     </Button>
@@ -260,13 +301,18 @@ class ExportDocumentation extends React.Component {
                     />
                 </Spin>
             </div>
-            {showForm && 
-                <FormTroubleET
-                    data={rowDataSelected} 
-                    onClose={this.handleClose} 
-                    onSubmit={this.handleSubmitData}
-                    />
-            }
+            <Modal
+                closable={false}        // show icon close
+                visible={this.state.showModalImg}
+                centered
+                onCancel={() => this.setState({showModalImg: false})}
+                destroyOnClose={true}
+                footer={null}
+                style={{textAlign: 'center', maxHeight: '90vh', maxWidth: '90vw' }}
+                width='max-content'
+            >
+                <img src={this.state.imgSelected} alt="" />
+            </Modal>
             </>
         )
     }
