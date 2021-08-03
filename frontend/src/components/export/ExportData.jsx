@@ -1,0 +1,352 @@
+import React from "react"
+import moment from "moment"
+import { connect } from "react-redux";
+import { Button, Spin, DatePicker, Select } from "antd"
+import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Table } from "ant-table-extensions";
+
+import SocketContext from "../../context/SocketProvider";
+import { getAllTroubleET } from "../../api"
+
+import ExportExcel from "../../helpers/ExportExcel";
+
+const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
+
+var socket = null
+
+class ExportData extends React.Component {
+    static contextType = SocketContext
+    constructor(props){
+        super(props)
+
+        this.state = {
+            allData: [],
+            dataTable: [],
+            filterTable: {},
+
+            dataProjek: [],
+            dataPerangkat: [],
+            dataPenyebab: [],
+
+            filteredInfo: null,
+            sortedInfo: null,
+            showLoader: false,
+        }
+    }
+
+    handleGetAllData = async () => {
+        this.setState({showLoader: true})
+        const res = await getAllTroubleET()
+        console.log('Get all trouble ', res)
+
+        if(res.data){
+            if(res.data.code === 0){
+                this.setState({allData: res.data.data, dataTable: res.data.data})
+            }
+        }
+        this.setState({showLoader: false})
+    }
+
+    componentDidMount(){
+        this.handleGetAllData()
+
+        socket = this.context
+        if(socket){
+            socket.emit('request', 'projek_get')
+            socket.emit('request', 'perangkat_get')
+            socket.emit('request', 'penyebab_get')
+            this.handleSocketEvent()
+        }else{
+            this.toReconSocket = setTimeout(() => {
+                this.componentDidMount()
+            }, 1000);
+        }
+    }
+
+    handleSocketEvent = () => {
+        socket.on('response', (res) => {
+            console.log(res)
+            if(res.code === 10){
+                this.setState({dataProjek: res.data})
+            }else if(res.code === 30){
+                this.setState({dataPerangkat: res.data})
+            }else if(res.code === 50){
+                this.setState({dataPenyebab: res.data})
+            }else{
+                alert(res.message)
+            }
+        })
+    }
+
+    componentWillUnmount(){
+        clearTimeout(this.toReconSocket)
+        if(socket){
+            socket.off('response')
+            socket = null
+        }
+    }
+
+    handleChange = (pagination, filters, sorter) => {
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    };
+
+
+    filterByTanggalDone = (date) => {
+        const filter = {...this.state.filterTable}
+        if(date && date[0] && date[1]){
+            filter.tanggal_done = date
+        }else{
+            delete filter.tanggal_done
+        }
+
+        this.setState({filterTable: filter}, () => {
+            this.handleFilterDataTable()
+        })
+    }
+
+
+    filterByItem = (value, key) => {
+        const filter = {...this.state.filterTable}
+        if(value && value !== "null" && value !== null){
+            filter[key] = value
+        }else{
+            delete filter[key]
+        }
+
+        this.setState({filterTable: filter}, () => {
+            this.handleFilterDataTable()
+        })
+    }
+    
+    handleFilterDataTable = () => {
+        console.log(this.state.filterTable)
+
+        let dataTable = [...this.state.allData]
+        let result = []
+
+        const {filterTable} = this.state
+        if(Object.keys(filterTable).length > 0){
+            let x = 0
+            Object.keys(filterTable).forEach(key => {
+                x += 1
+                if(x > 1){
+                    if(key === "tanggal_done"){
+                        result = result.filter(data =>
+                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
+                        )
+                    }else{
+                        result = result.filter(data => data[key] === filterTable[key])
+                    }
+                }else{
+                    if(key === "tanggal_done"){
+                        result = dataTable.filter(data =>
+                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
+                        )
+                    }else{
+                        result = dataTable.filter(data => data[key] === filterTable[key])
+                    }
+                }
+            })
+        }else{
+            result = this.state.allData
+        }
+
+        this.setState({dataTable: result})
+    }
+
+    handleExportListTrouble = async () => {
+        this.setState({showLoader: true})
+        await ExportExcel.exportListTroubleET(this.props.user, this.state.dataTable)
+        this.setState({showLoader: false})
+    }
+
+    render(){
+        let { dataTable, filteredInfo, sortedInfo, showLoader, dataProjek, dataPenyebab, dataPerangkat } = this.state
+        sortedInfo = sortedInfo || {};
+        filteredInfo = filteredInfo || {};
+
+        const columns = [
+            {
+                title: "No Ticket",
+                dataIndex: "no",
+                key: 'no',
+                fixed: 'left'
+            },
+            {
+                title: "Tanggal Done",
+                dataIndex: "tanggal_done",
+                key: 'tanggal_done',
+                sorter: (a, b) => moment(a.tanggal_done, moment(a).creationData().format) - moment(b.tanggal_done, moment(b).creationData().format),
+                sortOrder: sortedInfo.columnKey === 'tanggal_done' && sortedInfo.order,
+                render: (data) =>
+                    <span>{moment(data, moment(data).creationData().format).format('DD-MM-YYYY')}</span>
+            },
+            {
+                title: "Jam Done",
+                dataIndex: "jam_done",
+                key: 'jam_done',
+            },
+            {
+                title: "Jenis Laporan",
+                dataIndex: 'jenislaporan',
+                key: 'jenislaporan',
+                filters: [
+                    { text: 'Aduan', value: 'ADUAN' },
+                    { text: 'Pekerjaan', value: 'PEKERJAAN' },
+                    { text: 'Permasalahan', value: 'PERMASALAHAN' },
+                ],
+                filteredValue: filteredInfo.jenislaporan || null,
+                onFilter: (value, record) => record.jenislaporan.includes(value)
+            },
+            {
+                title: "Projek",
+                dataIndex: "nama_projek",
+                key: 'nama_projek',
+                sorter: (a, b) => a.nama_projek.localeCompare(b.nama_projek),
+                sortOrder: sortedInfo.columnKey === 'nama_projek' && sortedInfo.order,
+            },
+            {
+                title: "Lokasi",
+                dataIndex: "nama_stasiun",
+                key: 'nama_stasiun',
+                sorter: (a, b) => a.nama_stasiun.localeCompare(b.nama_stasiun),
+                sortOrder: sortedInfo.columnKey === 'nama_stasiun' && sortedInfo.order,
+            },
+            {
+                title: "Perangkat",
+                dataIndex: "nama_perangkat",
+                key: 'nama_perangkat',
+                sorter: (a, b) => a.nama_perangkat.localeCompare(b.nama_perangkat),
+                sortOrder: sortedInfo.columnKey === 'nama_perangkat' && sortedInfo.order,
+            },
+            {
+                title: "Part",
+                dataIndex: "nama_part",
+                key: 'nama_part',
+                sorter: (a, b) => a.nama_part.localeCompare(b.nama_part),
+                sortOrder: sortedInfo.columnKey === 'nama_part' && sortedInfo.order,
+            },
+            {
+                title: "Problem",
+                dataIndex: "problem",
+                key: 'problem'
+            },
+            {
+                title: "Penyebab",
+                dataIndex: "penyebab",
+                key: 'penyebab'
+            },
+            {
+                title: "Solusi",
+                dataIndex: "solusi",
+                key: 'solusi'
+            },
+            {
+                title: "Durasi",
+                dataIndex: "totaldowntime",
+                key: 'totaldowntime'
+            },
+            {
+                title: "RefLog",
+                dataIndex: "refnumber",
+                key: 'refnumber'
+            },
+            {
+                title: "Status",
+                dataIndex: 'status',
+                key: 'status',
+                filters: [
+                    { text: 'Done', value: 'Done' },
+                    { text: 'Open', value: 'Open' },
+                    { text: 'Pending', value: 'Pending' },
+                ],
+                filteredValue: filteredInfo.status || null,
+                onFilter: (value, record) => record.status.includes(value),
+                fixed: 'right',
+                render: (data) => {
+                    return {
+                        props : {
+                            style: {color: data==='Done'? '#000' : data==='Open'? '#db0' : 'red'}
+                        },
+                        children: <span>{data}</span>
+                    }
+                }
+            },
+        ]
+
+        return (
+            <>
+            <div>
+                <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
+                    <h1>Data Trouble ET</h1>
+                    <label>Filter By Tanggal Done</label>
+                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                    <label>Jenis Laporan</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "jenislaporan")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        <Select.Option key="ADUAN">Aduan</Select.Option>
+                        <Select.Option key="PEKERJAAN">Pekerjaan</Select.Option>
+                        <Select.Option key="PERMASALAHAN">Permasalahan</Select.Option>
+                    </Select>
+                    <label>Projek</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        {dataProjek?.map(data => 
+                            <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
+                        )}
+                    </Select>
+                    <label>Perangkat</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        {dataPerangkat?.map(data => 
+                            <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
+                        )}
+                    </Select>
+                    <label>Penyebab</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_penyebab")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        {dataPenyebab?.map(data => 
+                            <Select.Option key={data.no_penyebab}>{data.penyebab}</Select.Option>
+                        )}
+                    </Select>
+                    <label>Status</label>
+                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "status")}>
+                        <Select.Option key={null}>- ALL</Select.Option>
+                        <Select.Option key="Done">Done</Select.Option>
+                        <Select.Option key="Open">Open</Select.Option>
+                        <Select.Option key="Pending">Pending</Select.Option>
+                    </Select>
+                    <Table 
+                        rowKey='no'
+                        columns={columns}
+                        dataSource={dataTable}
+                        onChange={this.handleChange}
+                        pagination={{ pageSize: 8 }}
+                        scroll={{x: 'max-content', y: 350}}
+                        size='small'
+                        // searchableProps={{ fuzzySearch: true }}
+                        // exportableProps={{showColumnPicker: true}}
+                        // searchable
+                    />
+                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble} style={{position: 'absolute', left: '3%', bottom: 10}}>
+                        Export
+                    </Button>
+                </Spin>
+            </div>
+            </>
+        )
+    }
+}
+
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(ExportData)
