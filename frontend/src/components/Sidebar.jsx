@@ -112,7 +112,9 @@ class Sidebar extends Component {
                         <Menu.Item key="expDocumentation" icon={<VideoCameraOutlined />}>
                             <Link to="/admin/export/documentation">Dokumentasi</Link>
                         </Menu.Item>
-                        <Menu.Item key="expData" icon={<ExportOutlined />}>Export Data</Menu.Item>
+                        <Menu.Item key="expData" icon={<ExportOutlined />}>
+                            <Link to="/admin/export/data">Export Data</Link>
+                        </Menu.Item>
                         <Menu.Item key="expCountData" icon={<FieldBinaryOutlined />}>Count Data</Menu.Item>
                     </SubMenu>
                     <SubMenu key="chart" title="Chart" icon={<BarChartOutlined />}>
