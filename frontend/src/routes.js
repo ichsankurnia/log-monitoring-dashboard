@@ -9,6 +9,7 @@ import DataSolusi from "./components/admin/DataSolusi";
 import NoMatch404 from "./components/NoMatch404";
 import TroubleET from "./components/log/TroubleET";
 import ExportDocumentation from "./components/export/ExportDocumenation";
+import ExportData from "./components/export/ExportData";
 
 const routes = [
     {
@@ -60,6 +61,11 @@ const routes = [
         path : "/export/documentation",
         layout: '/admin',
         component: ExportDocumentation
+    },
+    {
+        path : "/export/data",
+        layout: '/admin',
+        component: ExportData
     },
     {
         path : "/*",
