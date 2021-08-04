@@ -1,6 +1,6 @@
 ## This project was built using
 
-### `NodeJS` `ExpressJS` `PostgreSQL` `SocketIO` `Rest API` `ReactJS` `SocketIO-Client` `Axios` `Ant Design`
+### `NodeJS` `ExpressJS` `PostgreSQL` `SocketIO` `Rest API` `ReactJS` `Redux` `SocketIO-Client` `Axios` `Ant Design`
 
 
 
