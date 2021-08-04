@@ -9,6 +9,7 @@ import SocketContext from "../../context/SocketProvider";
 import { getAllTroubleET } from "../../api"
 
 import ExportExcel from "../../helpers/ExportExcel";
+import Helper from "../../helpers/Helper";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -124,36 +125,7 @@ class ExportData extends React.Component {
     
     handleFilterDataTable = () => {
         console.log(this.state.filterTable)
-
-        let dataTable = [...this.state.allData]
-        let result = []
-
-        const {filterTable} = this.state
-        if(Object.keys(filterTable).length > 0){
-            let x = 0
-            Object.keys(filterTable).forEach(key => {
-                x += 1
-                if(x > 1){
-                    if(key === "tanggal_done"){
-                        result = result.filter(data =>
-                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
-                        )
-                    }else{
-                        result = result.filter(data => data[key] === filterTable[key])
-                    }
-                }else{
-                    if(key === "tanggal_done"){
-                        result = dataTable.filter(data =>
-                            moment(data[key], moment(data[key]).creationData().format).isBetween(filterTable[key][0], filterTable[key][1])
-                        )
-                    }else{
-                        result = dataTable.filter(data => data[key] === filterTable[key])
-                    }
-                }
-            })
-        }else{
-            result = this.state.allData
-        }
+        const result = Helper.filterDataTable(this.state.filterTable, this.state.allData)
 
         this.setState({dataTable: result})
     }
@@ -227,7 +199,9 @@ class ExportData extends React.Component {
                 title: "Part",
                 dataIndex: "nama_part",
                 key: 'nama_part',
-                sorter: (a, b) => a.nama_part.localeCompare(b.nama_part),
+                sorter: (a, b) => {
+                    try { return a.nama_part.localeCompare(b.nama_part) } catch (error) {}
+                },
                 sortOrder: sortedInfo.columnKey === 'nama_part' && sortedInfo.order,
             },
             {
