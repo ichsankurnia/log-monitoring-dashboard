@@ -26,21 +26,35 @@ class TroubleETController {
         }
     }
 
-    static getDetailTrouble = async (req, res) => {
+    static getOneTrouble = async (req, res) => {
         try {
             const {ticket_id} = req.params
             
             const data = await TroubleET.findOne({no: ticket_id})
             if(data){
-                return res.json(response(0, 'success get trouble et', data))
+                return res.json(response(0, 'success get one trouble et', data))
             }else{
-                return res.json(response(571, `fail get trouble et, no : ${ticket_id}`, null))
+                return res.json(response(571, `fail get one trouble et, no : ${ticket_id}`, null))
             }
         } catch (error) {
             return res.json(response(471, error.message, null))
         }
     }
+    
+    static getDetailTrouble = async (req, res) => {
+        try {
+            const {ticket_id} = req.params
 
+            const data = await TroubleET.detail({no: ticket_id})
+            if(data){
+                return res.json(response(0, 'success get detail trouble et', data))
+            }else{
+                return res.json(response(571, `fail get detail trouble et, no : ${ticket_id}`, null))
+            }
+        } catch (error) {
+            return res.json(response(472, error.message, null))
+        }
+    }
 
     static addTrouble = async (req, res) => {
         try {
@@ -52,10 +66,10 @@ class TroubleETController {
                 }
                 return res.json(response(0, 'success add new trouble et', result))
             }else{
-                return res.json(response(572, 'fail add new trouble et', null))
+                return res.json(response(573, 'fail add new trouble et', null))
             }
         } catch (error) {
-            return res.json(response(472, error.message, null))
+            return res.json(response(473, error.message, null))
         }
     }
     
@@ -68,10 +82,10 @@ class TroubleETController {
             if(data){
                 return res.json(response(0, 'success update trouble et', data))
             }else{
-                return res.json(response(573, 'fail update trouble et', null))
+                return res.json(response(574, 'fail update trouble et', null))
             }
         } catch (error) {
-            return res.json(response(473, error.message, null))
+            return res.json(response(474, error.message, null))
         }
     }
 
@@ -83,10 +97,10 @@ class TroubleETController {
             if(data){
                 return res.json(response(0, 'success delete trouble et', data))
             }else{
-                return res.json(response(574, 'fail delete trouble et', null))
+                return res.json(response(575, 'fail delete trouble et', null))
             }
         } catch (error) {
-            return res.json(response(474, error.message, null))
+            return res.json(response(475, error.message, null))
         }
     }
 
@@ -116,10 +130,10 @@ class TroubleETController {
                 });
                 return res.json(response(0, 'success get documentation trouble', result))
             }else{
-                return res.json(response(575, 'fail get documentation trouble et', null))
+                return res.json(response(576, 'fail get documentation trouble et', null))
             }
         } catch (error) {
-            return res.json(response(475, error.message, null))
+            return res.json(response(476, error.message, null))
         }
     }
 
