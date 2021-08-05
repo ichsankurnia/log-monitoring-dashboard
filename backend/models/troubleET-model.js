@@ -59,6 +59,40 @@ class TroubleET {
         }
     }
 
+    static detail = async (identity) => {
+        const sql = `
+        SELECT 
+            no, tanggal_masalah, jam_masalah, tanggal_done, jam_done, jenislaporan, 
+            PROJ.no_projek, PROJ.nama_projek, 
+            LOK.ip, LOK.nama_stasiun, 
+            PER.no_perangkat, PER.nama_perangkat, 
+            PART.no_pvm, PART.nama_perangkat as nama_part,
+            problem, PEN.no_penyebab, PEN.penyebab,
+            solusi, no_user, sumber, refnumber, refnotrouble, teknisi, totaldowntime, arah_gate, status, pic_before, pic_after
+        FROM public.trouble_et 
+        LEFT JOIN public.projek as PROJ
+        ON PROJ.no_projek = public.trouble_et.no_projek
+        LEFT JOIN public.stasiun as LOK
+        ON LOK.ip = public.trouble_et.ip
+        LEFT JOIN public.et as PER
+        ON PER.no_perangkat = public.trouble_et.no_perangkat
+        LEFT JOIN public.perangkat_vm as PART
+        ON PART.no_pvm = public.trouble_et.no_pvm
+        LEFT JOIN public.penyebab as PEN
+        ON PEN.no_penyebab = public.trouble_et.no_penyebab 
+        WHERE no = '${identity.no}'
+        `
+        console.log(sql)
+
+        try {
+            const result = await db.query(sql)
+            return result.rows[0]
+        } catch (error) {
+            console.error(error.message)
+            return false
+        }
+    }
+
     static create = async (dataInsert) => {
         const sql = commonQueryInsert(tableName, dataInsert)
         console.log(sql)
