@@ -1,12 +1,13 @@
 import { /* Table,  */Popconfirm, Button, Spin, DatePicker } from "antd"
 import { Table } from "ant-table-extensions";
-import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
+import { ExportOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons';
 import moment from "moment"
 import React from "react"
-import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, updateTroubleET } from "../../api"
+import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, getOneTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
 import ExportExcel from "../../helpers/ExportExcel";
 import { connect } from "react-redux";
+import ModalDetailTroubleET from "../modal/ModalDetailTroubleET";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -21,10 +22,12 @@ class TroubleET extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showForm: false,
-            showLoader: false,
-            rowDataSelected: {},
             isUpdate: false,
-            no_ticket: 0
+            no_ticket: 0,
+            rowDataSelected: {},
+            showDetailTicket: false,
+            detailTicket: null,
+            showLoader: false,
         }
     }
 
@@ -48,7 +51,7 @@ class TroubleET extends React.Component {
 
     handleGetDetailTrouble = async (ticketNum) => {
         this.setState({showLoader: true})
-        const res = await getDetailTroubleET(ticketNum)
+        const res = await getOneTroubleET(ticketNum)
 
         console.log('GET Detail Trouble ET :', res)
         if(res.data){
@@ -137,12 +140,25 @@ class TroubleET extends React.Component {
     }
 
 
+    handleShowDetailTicket = async (data) => {
+        this.setState({showLoader: true})
+        const res = await getDetailTroubleET(data.no)
+
+        console.log("Detail TroubleET :", res)
+        if(res.data?.code === 0){
+            this.setState({showDetailTicket: true, detailTicket: res.data.data})
+        }else{
+            alert('fail get detail trouble et')
+        }
+        this.setState({showLoader: false})
+    }
+
     handleClose = () => {
         this.setState({showForm: false})
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, showLoader, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showForm, showLoader, rowDataSelected, showDetailTicket, detailTicket } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -260,6 +276,7 @@ class TroubleET extends React.Component {
                     dataTable.length > 1 &&
                     <>
                         <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <span style={{marginRight: 5, cursor: 'pointer'}} onClick={() => this.handleShowDetailTicket(dataSelected)}><EyeTwoTone /></span>
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
                             <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
                         </Popconfirm>
@@ -302,13 +319,7 @@ class TroubleET extends React.Component {
                     onSubmit={this.handleSubmitData}
                     />
             }
-            {/* {showLoader && 
-            <Progress strokeColor={{
-                '0%': '#108ee9',
-                '100%': '#87d068',
-              }}
-              percent={99.9}/>
-            } */}
+            <ModalDetailTroubleET onClose={() => this.setState({showDetailTicket: false})} visible={showDetailTicket} data={detailTicket} />
             </>
         )
     }
