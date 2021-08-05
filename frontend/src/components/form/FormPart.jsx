@@ -30,7 +30,7 @@ const FormPart = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new part"
+                title={data? "Update Part" : "Create a new part" }
                 width={360}
                 placement="right"
                 onClose={onClose}

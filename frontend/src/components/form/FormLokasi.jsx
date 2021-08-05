@@ -50,7 +50,7 @@ const FormLokasi = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new location / station"
+                title={data?"Update location / station" : "Create a new location / station"}
                 width={360}
                 placement="right"
                 onClose={onClose}

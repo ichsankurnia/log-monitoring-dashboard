@@ -51,7 +51,7 @@ const FormPerangkat = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new device"
+                title={data? "Update Device": "Create a new device"}
                 width={360}
                 placement="right"
                 onClose={onClose}

@@ -30,7 +30,7 @@ const FormProjek = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new project"
+                title={data? "Update Project" : "Create a new project"}
                 width={360}
                 placement="right"
                 onClose={onClose}

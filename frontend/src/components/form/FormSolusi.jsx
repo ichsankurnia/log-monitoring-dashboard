@@ -46,7 +46,7 @@ const FormSolusi = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new solution"
+                title={data? "Update Solution" : "Create a new solution"}
                 width={360}
                 placement="right"
                 onClose={onClose}

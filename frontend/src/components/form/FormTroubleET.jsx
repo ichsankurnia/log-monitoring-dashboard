@@ -267,7 +267,7 @@ class FormTroubleET extends React.Component {
         return (
             <>
                 <Drawer
-                    title="Create a new ticket"
+                    title={data? "Update Ticket" : "Create a new ticket"}
                     width={720}
                     onClose={onClose}
                     visible={true}

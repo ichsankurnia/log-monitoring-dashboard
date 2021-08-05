@@ -62,7 +62,7 @@ const FormPenyebab = ({onClose, onSubmit, visible, data}) => {
     return (
         <>
             <Drawer
-                title="Create a new device"
+                title={data? "Update Cause" : "Create a new cause"}
                 width={360}
                 placement="right"
                 onClose={onClose}
