@@ -42,9 +42,19 @@ export const getAllTroubleET = async () => {
     }
 }
 
-export const getDetailTroubleET = async (ticketNum) => {
+export const getOneTroubleET = async (ticketNum) => {
     try {
         const data = await api.get(`/api/troubleet/${ticketNum}`)
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))       
+    }
+}
+
+export const getDetailTroubleET = async(ticketNum) => {
+    try {
+        const data = await api.get(`/api/troubleet-detail/${ticketNum}`)
         return data
     } catch (error) {
         if(error.response) return error.response
