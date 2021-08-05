@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { authLogout } from '../api';
 import Sidebar from '../components/Sidebar';
 import { setUserData } from '../redux/action/actions';
 import routes from '../routes';
@@ -16,11 +17,18 @@ const Dashboard = ({setUserData}) => {
     const history = useHistory()
 
     useEffect(() => {
+        async function handleLogout(noUser){
+            const res = await authLogout({no_user: noUser})
+            console.log('logout :', res)
+        }
+        
         const token = localStorage.getItem('authToken')
+
         if(token){
             const decode = jwtDecode(token)
             const currentTime = Date.now() / 1000;
             if(decode.exp < currentTime){
+                handleLogout(decode.no_user)
 				localStorage.clear()
                 history.push('/auth')
 			}else{
