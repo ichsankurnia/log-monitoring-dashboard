@@ -35,24 +35,27 @@ class ExportDocumentation extends React.Component {
             
             imgSelected: null
         }
+
+        this.is_mounted = false
     }
 
     handleGetAllData = async () => {
         this.setState({showLoader: true})
         const res = await getListDocumentation()
         console.log('Get list documentation ', res)
-
+        
         if(res.data){
-            if(res.data.code === 0){
+            if(res.data?.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
         }
-        this.setState({showLoader: false})
+        this.is_mounted && this.setState({showLoader: false})
     }
-
+    
     componentDidMount(){
+        this.is_mounted = true
         this.handleGetAllData()
-
+        
         socket = this.context
         if(socket){
             socket.emit('request', 'projek_get')
@@ -65,7 +68,7 @@ class ExportDocumentation extends React.Component {
             }, 1000);
         }
     }
-
+    
     handleSocketEvent = () => {
         socket.on('response', (res) => {
             console.log(res)
@@ -80,15 +83,16 @@ class ExportDocumentation extends React.Component {
             }
         })
     }
-
+    
     componentWillUnmount(){
+        this.is_mounted = false
         clearTimeout(this.toReconSocket)
         if(socket){
             socket.off('response')
             socket = null
         }
     }
-
+    
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({

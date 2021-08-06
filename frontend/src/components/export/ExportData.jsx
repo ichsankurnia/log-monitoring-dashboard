@@ -33,6 +33,8 @@ class ExportData extends React.Component {
             sortedInfo: null,
             showLoader: false,
         }
+
+        this.is_mounted = false
     }
 
     handleGetAllData = async () => {
@@ -41,14 +43,15 @@ class ExportData extends React.Component {
         console.log('Get all trouble ', res)
 
         if(res.data){
-            if(res.data.code === 0){
+            if(res.data.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
         }
-        this.setState({showLoader: false})
+        this.is_mounted && this.setState({showLoader: false})
     }
 
     componentDidMount(){
+        this.is_mounted = true
         this.handleGetAllData()
 
         socket = this.context
@@ -80,6 +83,7 @@ class ExportData extends React.Component {
     }
 
     componentWillUnmount(){
+        this.is_mounted = false
         clearTimeout(this.toReconSocket)
         if(socket){
             socket.off('response')

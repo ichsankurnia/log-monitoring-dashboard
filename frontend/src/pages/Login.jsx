@@ -18,6 +18,7 @@ const Login = () => {
         const res = await authLogin(values)
         
         console.log('login :', res)
+        setLoading(false)
         if(res.data){
             if(res.data.code === 0) {
                 localStorage.setItem('authToken', res.data.token)
@@ -27,7 +28,6 @@ const Login = () => {
         }else{
             alert(res.message)
         }
-        setLoading(false)
     };
     
     const onFinishFailed = (errorInfo) => {

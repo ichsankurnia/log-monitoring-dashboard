@@ -29,6 +29,8 @@ class TroubleET extends React.Component {
             detailTicket: null,
             showLoader: false,
         }
+
+        this.is_mounted = false
     }
 
     handleGetAllData = async () => {
@@ -37,15 +39,20 @@ class TroubleET extends React.Component {
         console.log('Get all trouble ', res)
 
         if(res.data){
-            if(res.data.code === 0){
+            if(res.data.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
         }
-        this.setState({showLoader: false})
+        this.is_mounted && this.setState({showLoader: false})
     }
 
     componentDidMount(){
+        this.is_mounted = true
         this.handleGetAllData()
+    }
+
+    componentWillUnmount(){
+        this.is_mounted = false
     }
 
 

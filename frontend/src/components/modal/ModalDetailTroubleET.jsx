@@ -15,6 +15,7 @@ const titleStyle = {
 
 const ModalDetailTroubleET = ({onClose, visible, data}) => {
     moment.locale('es')
+    
     return (
       <>
         <Drawer
