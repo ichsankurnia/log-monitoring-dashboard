@@ -1,17 +1,19 @@
-import { Breadcrumb, Layout } from 'antd';
-import Avatar from 'antd/lib/avatar/avatar';
-import Title from 'antd/lib/typography/Title';
-import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory, Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { authLogout } from '../api';
-import Sidebar from '../components/Sidebar';
-import { setUserData } from '../redux/action/actions';
-import routes from '../routes';
+import { connect } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { ExportOutlined, VideoCameraTwoTone, AppstoreFilled, TableOutlined } from '@ant-design/icons';
 
-const { Header, Footer, Sider, Content } = Layout;
+import routes from '../routes';
+import { authLogout } from '../api';
+import { setUserData } from '../redux/action/actions';
+
+import wallDark from '../assets/img/win11-wall-dark.jpg'
+import wallLight from '../assets/img/win11-wall-light.jpg'
+
+
+const wllps = [wallDark, wallLight]
 
 const Dashboard = ({setUserData}) => {
     const history = useHistory()
@@ -53,34 +55,36 @@ const Dashboard = ({setUserData}) => {
 		});
 	}
 
+    const handleRefresh = () => {
+        history.push('/')
+        window.location.reload()
+    }
+
     return (
-            <Layout style={{height: '100vh', overflow: 'hidden'}}>
-            {/* <Layout> */}
-                <Header style={{padding: 10}}>
-                    <Avatar style={{float: 'right'}} icon="user" />
-                    <Title style={{color: 'white'}} level={3}>Log Monitoring Apps</Title>
-                </Header>
-                <Layout>
-                    <Sider>
-                        <Sidebar />
-                    </Sider>
-                    <Layout>
-                        <Content style={{ padding: '0 50px' }}>
-                            <Breadcrumb style={{ margin: '16px 0' }}>
-                                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                                <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-                            </Breadcrumb>
-                            <div style={{background: '#fff', height: '90vh'}}>
-                                <Switch>
-                                    {getRoutes(routes)}
-                                    <Redirect from="*" to="/admin/index" />
-                                </Switch>
-                            </div>
-                        </Content>
-                        <Footer style={{textAlign: 'center', height: '9vh'}}>Ant Design ©2021 Created by ichsankurnia</Footer>
-                    </Layout>
-                </Layout>
-            </Layout>
+        <div className='background'>
+            <img className='img-background' src={wllps[Math.floor(Math.random() * 2)]} alt="" />
+            <div className='dash-content'>
+                <Switch>
+                    {getRoutes(routes)}
+                    <Redirect from="*" to="/admin/index" />
+                </Switch>
+            </div>
+            <div className='dash-footer'>
+                <Link to='/admin/menu'>
+                    <AppstoreFilled className="ic-footer"/>
+                </Link>
+                <Link to="/admin/data-log">
+                    <TableOutlined className='ic-footer' />
+                </Link>
+                <Link to="/admin/export/data">
+                    <ExportOutlined className='ic-footer' />
+                </Link>
+                <Link to="/admin/export/documentation">
+                    <VideoCameraTwoTone className='ic-footer' />
+                </Link>
+                <div className='dash-foot-refresh' onClick={handleRefresh}></div>
+            </div>
+        </div>
     )
 }
 
