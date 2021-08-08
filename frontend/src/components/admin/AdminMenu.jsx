@@ -1,8 +1,9 @@
 import { Link, useHistory } from "react-router-dom"
 import jwtDecode from "jwt-decode"
-import { AimOutlined, BugFilled, CheckCircleFilled, FundProjectionScreenOutlined, GoldFilled, LogoutOutlined, SettingFilled, UsergroupAddOutlined } from "@ant-design/icons"
+import { AimOutlined, BugFilled, CheckCircleFilled, ExclamationCircleOutlined, FundProjectionScreenOutlined, GoldFilled, LogoutOutlined, SettingFilled, UsergroupAddOutlined } from "@ant-design/icons"
 
 import { authLogout } from "../../api"
+import { Modal } from 'antd';
 
 const AdminMenu = () => {
     const history = useHistory()
@@ -18,6 +19,17 @@ const AdminMenu = () => {
         } catch (error) {
             alert(error)
         }
+    }
+
+    function confirmLogout() {
+        Modal.confirm({
+            title: 'Logout',
+            icon: <ExclamationCircleOutlined />,
+            content: 'Are sure want to leave ?',
+            okText: 'Yes',
+            cancelText: 'No',
+            onOk: handleLogout
+        });
     }
 
     return (
@@ -52,11 +64,14 @@ const AdminMenu = () => {
                     <UsergroupAddOutlined className='ic-admin-menu' />
                     <label>Data User</label>
                 </Link>   
-                <div className="sub-admin-menu" onClick={handleLogout}>
+                <div className="sub-admin-menu" onClick={confirmLogout}>
                     <LogoutOutlined className='ic-admin-menu' />
                     <label>Logout</label>
                 </div>            
             </div>
+            <Modal>
+
+            </Modal>
         </div>
     )
 }
