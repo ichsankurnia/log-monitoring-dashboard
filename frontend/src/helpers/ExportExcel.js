@@ -38,6 +38,7 @@ class ExportExcel {
                 { header: 'Penyebab', key: 'penyebab' },
                 { header: 'Solusi', key: 'solusi' },
                 { header: 'Sumber', key: 'sumber' },
+                { header: 'Ref Number', key: 'refnumber' },
                 { header: 'RefNoTrouble', key: 'refnotrouble' },
                 { header: 'Teknisi', key: 'teknisi' },
                 { header: 'Downtime', key: 'totaldowntime' },
@@ -111,6 +112,7 @@ class ExportExcel {
                     solusi: item.solusi,
                     sumber: item.sumber,
                     refnotrouble: item.refnotrouble,
+                    refnumber: item.refnumber,
                     teknisi: item.teknisi,
                     totaldowntime: item.totaldowntime,
                     status: item.status
