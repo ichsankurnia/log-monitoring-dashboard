@@ -243,37 +243,45 @@ class ExportDocumentation extends React.Component {
 
         return (
             <>
-            <div>
+            <div className='w-100'>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
-                    <h1>Documentation Trouble ET</h1>
-                    <label>Filter By Tanggal Done</label>
-                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
-                    <label>Projek</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        {dataProjek?.map(data => 
-                            <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
-                        )}
-                    </Select>
-                    <label>Perangkat</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        {dataPerangkat?.map(data => 
-                            <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
-                        )}
-                    </Select>
-                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble}>
-                        Export
-                    </Button>
+                    <h1 className='txt-white'>Documentation Trouble ET</h1>
+                    <div className='row-sp'>
+                        <div>
+                            <label className='txt-white'>Tanggal Done </label>
+                            <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                        </div>
+                        <div>
+                            <label className='txt-white'>Projek </label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                {dataProjek?.map(data => 
+                                    <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div>
+                            <label className='txt-white'>Perangkat </label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                {dataPerangkat?.map(data => 
+                                    <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
+                                )}
+                            </Select>
+                        </div>
+                    </div>
                     <Table 
                         rowKey='no'
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
                         pagination={{ pageSize: 3 }}
-                        scroll={{x: 'max-content'}}
+                        scroll={{x: 'max-content', y: 400}}
                         size='small'
                     />
+                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble} style={{position: 'absolute', left: 0, bottom: 10}}>
+                        Export
+                    </Button>
                 </Spin>
             </div>
             <Modal

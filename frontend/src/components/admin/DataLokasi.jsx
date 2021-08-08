@@ -150,14 +150,16 @@ class DataLokasi extends React.Component {
         return (
             <>
             <div>
-                <h1>Data Lokasi</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Lokasi</Button>
+                <h1 className='txt-white'>Data Lokasi</h1>
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Lokasi</Button>
                 <Table 
                     rowKey='ip'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    pagination={{ pageSize: 8 }}
+                    scroll={{x: 'max-content'}}
+                    size='small'
                 />
             </div>
             <FormLokasi

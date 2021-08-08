@@ -100,7 +100,6 @@ class DataProjek extends React.Component {
                 key: 'no_projek',
                 sorter: (a, b) => a.no_projek - b.no_projek,
                 sortOrder: sortedInfo.columnKey === 'no_projek' && sortedInfo.order,
-                width: 150
             },
             {
                 title: "Nama Projek",
@@ -113,7 +112,6 @@ class DataProjek extends React.Component {
                 title: "Kode Projek",
                 dataIndex: "initial",
                 key: 'initial',
-                with: 150
             },
             {
                 title: "Active",
@@ -127,12 +125,10 @@ class DataProjek extends React.Component {
                 onFilter: (value, record) => {
                     return record.b_active.includes(value)
                 },
-                width: 150
             },
             {
                 title: "Action",
                 fixed: 'right',
-                width: 100,
                 render: (dataSelected) => 
                     dataTable.length > 1 &&
                     <>
@@ -148,14 +144,16 @@ class DataProjek extends React.Component {
         return (
             <>
             <div>
-                <h1>Data Projek</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Project</Button>
+                <h1 className='txt-white'>Data Projek</h1>
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Project</Button>
                 <Table 
                     rowKey='no_projek'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    pagination={{ pageSize: 8 }}
+                    scroll={{x: 'max-content'}}
+                    size='small'
                 />
             </div>
             <FormProjek

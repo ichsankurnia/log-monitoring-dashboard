@@ -258,59 +258,70 @@ class ExportData extends React.Component {
 
         return (
             <>
-            <div>
+            <div className='w-100'>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
-                    <h1>Data Trouble ET</h1>
-                    <label>Filter By Tanggal Done</label>
-                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
-                    <label>Jenis Laporan</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "jenislaporan")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        <Select.Option key="ADUAN">Aduan</Select.Option>
-                        <Select.Option key="PEKERJAAN">Pekerjaan</Select.Option>
-                        <Select.Option key="PERMASALAHAN">Permasalahan</Select.Option>
-                    </Select>
-                    <label>Projek</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        {dataProjek?.map(data => 
-                            <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
-                        )}
-                    </Select>
-                    <label>Perangkat</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        {dataPerangkat?.map(data => 
-                            <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
-                        )}
-                    </Select>
-                    <label>Penyebab</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_penyebab")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        {dataPenyebab?.map(data => 
-                            <Select.Option key={data.no_penyebab}>{data.penyebab}</Select.Option>
-                        )}
-                    </Select>
-                    <label>Status</label>
-                    <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "status")}>
-                        <Select.Option key={null}>- ALL</Select.Option>
-                        <Select.Option key="Done">Done</Select.Option>
-                        <Select.Option key="Open">Open</Select.Option>
-                        <Select.Option key="Pending">Pending</Select.Option>
-                    </Select>
+                    <h1 className='txt-white'>Export Data Trouble ET</h1>
+                    <div className='row-sp'>
+                        <div>
+                            <label className='txt-white'>Filter By Tanggal Done</label>
+                            <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                        </div>
+                        <div>
+                            <label className='txt-white'>Jenis Laporan</label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "jenislaporan")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                <Select.Option key="ADUAN">Aduan</Select.Option>
+                                <Select.Option key="PEKERJAAN">Pekerjaan</Select.Option>
+                                <Select.Option key="PERMASALAHAN">Permasalahan</Select.Option>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className='txt-white'>Projek</label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                {dataProjek?.map(data => 
+                                    <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div>
+                            <label className='txt-white'>Perangkat</label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                {dataPerangkat?.map(data => 
+                                    <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div>
+                            <label className='txt-white'>Penyebab</label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_penyebab")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                {dataPenyebab?.map(data => 
+                                    <Select.Option key={data.no_penyebab}>{data.penyebab}</Select.Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div>
+                            <label className='txt-white'>Status</label>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "status")}>
+                                <Select.Option key={null}>- ALL</Select.Option>
+                                <Select.Option key="Done">Done</Select.Option>
+                                <Select.Option key="Open">Open</Select.Option>
+                                <Select.Option key="Pending">Pending</Select.Option>
+                            </Select>
+                        </div>
+                    </div>
                     <Table 
                         rowKey='no'
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: 8 }}
-                        scroll={{x: 'max-content', y: 350}}
+                        // pagination={{ pageSize: 8 }}
+                        scroll={{x: 'max-content'}}
                         size='small'
-                        // searchableProps={{ fuzzySearch: true }}
-                        // exportableProps={{showColumnPicker: true}}
-                        // searchable
                     />
-                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble} style={{position: 'absolute', left: '3%', bottom: 10}}>
+                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble} style={{position: 'absolute', left: 0, bottom: 10}}>
                         Export
                     </Button>
                 </Spin>
