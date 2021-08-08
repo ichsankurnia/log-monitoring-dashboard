@@ -1,3 +1,18 @@
+.w-100 {
+    width: 100%;
+}
+
+.txt-white {
+    color: white;
+}
+
+.row-sp {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .background {
     height: 100vh;
     display: flex;
@@ -26,8 +41,10 @@
 }
 
 .dash-content {
-    width: 95vw;
-    height: 85vh;
+    width: 95%;
+    height: 85%;
+    max-width: 95vw;
+    max-height: 85vh;
     margin-bottom: 40px;
     display: flex;
     justify-content: center;
@@ -90,10 +107,16 @@
     font-size: 20px;
     margin-right: 20px;
     margin-bottom: 30px;
+    cursor: pointer;
 }
 
 .ic-admin-menu {
     font-size: 200%;
     color: #37f;
     margin-right: 10px;
+}
+
+.title-add {
+    color: #13c2c2;
+    font-weight: bold;
 }
