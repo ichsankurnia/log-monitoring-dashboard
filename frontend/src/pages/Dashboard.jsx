@@ -11,12 +11,40 @@ import { setUserData } from '../redux/action/actions';
 
 import wallDark from '../assets/img/win11-wall-dark.jpg'
 import wallLight from '../assets/img/win11-wall-light.jpg'
+import wall1 from '../assets/img/wall1.jpg'
+import wall2 from '../assets/img/wall2.jpg'
+import wall3 from '../assets/img/wall3.jpg'
+import wall4 from '../assets/img/wall4.jpg'
+import wall5 from '../assets/img/wall5.jpg'
+import wall6 from '../assets/img/wall6.jpg'
+import { useState } from 'react';
+import { useRef } from 'react';
 
 
-const wllps = [wallDark, wallLight]
+const wllps = [wallDark, wallLight, wall1, wall2, wall3, wall4, wall5, wall6]
 
 const Dashboard = ({setUserData}) => {
+    const [count, setCount] = useState(10)
+    const [indexWall, setIndexWall] = useState(0)
     const history = useHistory()
+
+    const wallInterval = useRef(null)
+
+    useEffect(() => {
+        wallInterval.current = setInterval(() => {
+            if(count > 0){
+                setCount(count - 1)
+            }else{
+                setCount(10)
+                const random = Math.floor(Math.random() * 8)
+                setIndexWall(random)
+            }
+        }, 1000);
+
+        return () => {
+            clearInterval(wallInterval.current)
+        }
+    })
 
     useEffect(() => {
         async function handleLogout(noUser){
@@ -62,7 +90,7 @@ const Dashboard = ({setUserData}) => {
 
     return (
         <div className='background'>
-            <img className='img-background' src={wllps[Math.floor(Math.random() * 2)]} alt="" />
+            <img className='img-background' src={wllps[indexWall]} alt="" />
             <div className='dash-content'>
                 <Switch>
                     {getRoutes(routes)}
