@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 const { Option } = Select;
 
 const datetimeFormat = 'yyyy-MM-DD HH:mm:ss'
-const GMTFormat = 'ddd MMM DD YYYY HH:mm:ss GMT+0700'
 
 const ticketType = [
     'PERMASALAHAN',
@@ -90,14 +89,15 @@ class FormTroubleET extends React.Component {
                     const downtime = this.formRef.current.getFieldValue('downtime')
                     let payload = this.formRef.current.getFieldsValue()
 
-                    payload['tanggal_masalah'] = moment(downtime[0].toString(), GMTFormat).format('yyyy-MM-DD')
-                    payload['jam_masalah'] = moment(downtime[0].toString(), GMTFormat).format('HH:mm:ss')
-                    payload['tanggal_done'] = moment(downtime[1].toString(), GMTFormat).format('yyyy-MM-DD')
-                    payload['jam_done'] = moment(downtime[1].toString(), GMTFormat).format('HH:mm:ss')
+                    const unkFormat = moment(downtime[0]).creationData().format
+                    console.log(unkFormat)
+                    payload['tanggal_masalah'] = moment(downtime[0], unkFormat).format('yyyy-MM-DD')
+                    payload['jam_masalah'] = moment(downtime[0], unkFormat).format('HH:mm:ss')
+                    payload['tanggal_done'] = moment(downtime[1], unkFormat).format('yyyy-MM-DD')
+                    payload['jam_done'] = moment(downtime[1], unkFormat).format('HH:mm:ss')
                     payload['totaldowntime'] = res.data.downtime
                     payload['no_user'] = 2
 
-                    console.log(this.state.pic_before === picBefore)
                     if(this.state.pic_before !== picBefore){                                                        // if current image !== buffer imgae, update image to api
                         payload['pic_before'] = this.state.pic_before
                     }
@@ -185,8 +185,9 @@ class FormTroubleET extends React.Component {
     handleSubmit = () => {
         if(this.validateInput()){
             const downtime = this.formRef.current.getFieldValue('downtime')
-            const startDate = moment(downtime[0].toString(), GMTFormat).format(datetimeFormat)
-            const endDate = moment(downtime[1].toString(), GMTFormat).format(datetimeFormat)
+            const unkFormat = moment(downtime[0]).creationData().format
+            const startDate = moment(downtime[0], unkFormat).format(datetimeFormat)
+            const endDate = moment(downtime[1], unkFormat).format(datetimeFormat)
 
             socket.emit('request', `troubleET_downtime_${endDate}_${startDate}`)
         }
