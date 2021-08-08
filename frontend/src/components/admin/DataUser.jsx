@@ -168,14 +168,20 @@ class DataUser extends React.Component {
                 fixed: 'right',
                 render: (dataSelected) => 
                     dataTable.length > 1?
-                    user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
-                    <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
-                        </Popconfirm>
-                    </>
-                    : null : null
+                        user?.status.toLowerCase() === 'admin'?
+                            user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
+                            <>
+                                <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                                <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
+                                    <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                                </Popconfirm>
+                            </>
+                            : null 
+                        : user?.no_user === dataSelected.no_user &&
+                        <>
+                            <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        </> 
+                    : null
                 
             }
         ]
@@ -183,17 +189,19 @@ class DataUser extends React.Component {
         return (
             <>
             <div>
-                <h1>Data User</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New User</Button>
+                <h1 style={{color: 'white'}}>Data User</h1>
+                {user?.status?.toLowerCase() === 'admin' && 
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New User</Button>
+                }
                 <Table 
                     rowKey='no_user'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    // pagination={false}
+                    pagination={{ pageSize: 8 }} 
                     scroll={{x: 'max-content'}}
                     // scroll={{ y: 380 }}
-                    // pagination={{ pageSize: 20 }}
                     size="small"
                 />
             </div>
