@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
 import { Form, Input, Button, Spin } from 'antd';
-import {LoadingOutlined} from '@ant-design/icons';
+import {LoadingOutlined, TagsFilled} from '@ant-design/icons';
 // import { Link } from 'react-router-dom';
 import { authLogin } from '../api';
+import moment from 'moment';
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
@@ -82,7 +83,11 @@ const Login = () => {
         <Spin spinning={loading} indicator={loader} size='large'>
             <div className='background' >
                 <img className='img-background' src={imgSource?.largeImageURL} alt="" />
-                <p className='img-tags'>{imgSource?.tags}</p>
+                <p className='img-tags'><TagsFilled /> {imgSource?.tags}</p>
+                <div className='date-spotlight'>
+                    <label style={{fontSize: 105, marginBottom: -40}}>{moment().locale('en').format('HH:mm')}</label>
+                    <label style={{fontSize: 60}}>{moment().locale('en').format('dddd, MMMM DD')}</label>
+                </div>
                 <Form style={{width: '350px'}} layout="vertical" requiredMark={false}
                     name="basic" initialValues={{ remember: true}} onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     <Form.Item label={<label style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}>Username</label>} name="username"
