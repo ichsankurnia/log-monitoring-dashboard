@@ -1,5 +1,8 @@
-import { Table, Popconfirm, Button } from "antd"
 import React from "react"
+import { Link } from "react-router-dom"
+import { DeleteFilled, EditOutlined, HomeOutlined } from "@ant-design/icons"
+import { Table, Popconfirm, Button } from "antd"
+
 import SocketContext from "../../context/SocketProvider"
 import FormPerangkat from "../form/FormPerangkat"
 
@@ -146,9 +149,9 @@ class DataPerangkat extends React.Component {
                 render: (dataSelected) => 
                     dataTable.length > 1 &&
                     <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                            <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
                         </Popconfirm>
                     </>
                 
@@ -157,8 +160,11 @@ class DataPerangkat extends React.Component {
 
         return (
             <>
-            <div>
+            <div className='bg-blur'>
                 <h1 className='txt-white'>Data Perangkat</h1>
+                <Link className='ic-back' to='/admin/menu'>
+                    <HomeOutlined />
+                </Link>
                 <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Device</Button>
                 <Table 
                     rowKey='no_perangkat'

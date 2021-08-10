@@ -1,9 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { DeleteFilled, EditOutlined, HomeOutlined } from '@ant-design/icons';
 import { Table, Popconfirm, Button } from 'antd';
+
 import FormAddUser from '../form/FormAddUser';
 import SocketContext from '../../context/SocketProvider';
 import Helper from '../../helpers/Helper';
-import { connect } from 'react-redux';
 
 
 var socket = null
@@ -171,15 +174,15 @@ class DataUser extends React.Component {
                         user?.status.toLowerCase() === 'admin'?
                             user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
                             <>
-                                <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                                <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
                                 <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                                    <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                                    <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
                                 </Popconfirm>
                             </>
                             : null 
                         : user?.no_user === dataSelected.no_user &&
                         <>
-                            <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                            <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
                         </> 
                     : null
                 
@@ -188,8 +191,11 @@ class DataUser extends React.Component {
 
         return (
             <>
-            <div>
+            <div className='bg-blur'>
                 <h1 style={{color: 'white'}}>Data User</h1>
+                <Link className='ic-back' to='/admin/menu'>
+                    <HomeOutlined />
+                </Link>
                 {user?.status?.toLowerCase() === 'admin' && 
                 <Button type="text" className='title-add' onClick={this.handleAddData} >+ New User</Button>
                 }
