@@ -2,11 +2,12 @@ import React from 'react'
 import { Drawer, Form, Button, Input, Select } from 'antd';
 import PropTypes from 'prop-types';
 import TextArea from 'antd/lib/input/TextArea';
+import { connect } from 'react-redux';
 
 
 const { Option } = Select
 
-const FormAddUser = ({onClose, onSubmit, visible, data}) => {
+const FormAddUser = ({onClose, onSubmit, visible, data, user}) => {
     const [form] = Form.useForm();
 
     React.useEffect(() => {
@@ -69,12 +70,14 @@ const FormAddUser = ({onClose, onSubmit, visible, data}) => {
                     <Form.Item name="telepon" label="Phone Number" rules={[{ message: 'Please enter phone number' }]}>
                         <Input placeholder="Please enter telepon" />
                     </Form.Item>
+                    {user?.status?.toLowerCase() === 'admin' &&
                     <Form.Item name="status" label="Status" rules={[{ message: 'Please choose the status' }]}>
                         <Select>
                             <Option key="Admin">ADMIN</Option>
                             <Option key="Backend">BACK-END</Option>
                         </Select>
                     </Form.Item>
+                    }
                     {data &&
                     <Form.Item name="b_active" label="Active">
                         <Select>
@@ -95,4 +98,10 @@ FormAddUser.propTypes = {
     data: PropTypes.object
 };
 
-export default FormAddUser
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(FormAddUser)

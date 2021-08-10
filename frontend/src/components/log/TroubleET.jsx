@@ -1,11 +1,10 @@
 import { /* Table,  */Popconfirm, Button, Spin, DatePicker } from "antd"
 import { Table } from "ant-table-extensions";
-import { ExportOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons';
+import { DeleteFilled, EditOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons';
 import moment from "moment"
 import React from "react"
 import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, getOneTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
-import ExportExcel from "../../helpers/ExportExcel";
 import { connect } from "react-redux";
 import ModalDetailTroubleET from "../modal/ModalDetailTroubleET";
 
@@ -140,10 +139,6 @@ class TroubleET extends React.Component {
         }else{
             this.setState({dataTable: this.state.allData})
         }
-    }
-
-    handleExportListTrouble = () => {
-        ExportExcel.exportListTroubleET(this.props.user, this.state.dataTable)
     }
 
 
@@ -282,10 +277,12 @@ class TroubleET extends React.Component {
                 render: (dataSelected) => 
                     dataTable.length > 1 &&
                     <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>
+                            <EditOutlined />
+                        </span>&nbsp;&nbsp;
                         <span style={{marginRight: 5, cursor: 'pointer'}} onClick={() => this.handleShowDetailTicket(dataSelected)}><EyeTwoTone /></span>
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                            <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
                         </Popconfirm>
                     </>
                 
@@ -294,23 +291,26 @@ class TroubleET extends React.Component {
 
         return (
             <>
-            <div>
+            <div className='w-100 bg-blur'>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
-                    <h1>Data Trouble ET</h1>
-                    <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Trouble</Button>
-                    <label>Filter By Tanggal Masalah</label>
-                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_masalah')} />
-                    <label>Filter By Tanggal Done</label>
-                    <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
-                    <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble}>
-                        Export
-                    </Button>
+                    <h1 style={{color: 'white'}}>Data Trouble ET</h1>
+                    <div className='row-sp' style={{marginBottom: 10}}>
+                        <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Trouble</Button>
+                        <div>
+                            <label className='txt-white'>Filter by Tanggal Masalah </label>
+                            <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_masalah')} />
+                        </div>
+                        <div>
+                            <label className='txt-white'>Filter by Tanggal Done </label>
+                            <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
+                        </div>
+                    </div>
                     <Table 
                         rowKey='no'
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: 8 }}
+                        // pagination={{ pageSize: 10 }}
                         scroll={{x: 'max-content'}}
                         size='small'
                         // searchableProps={{ fuzzySearch: true }}

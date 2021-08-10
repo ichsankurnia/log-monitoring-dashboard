@@ -1,7 +1,6 @@
 import { Drawer, Button } from 'antd';
 import moment from 'moment';
 import Helper from '../../helpers/Helper';
-import 'moment/locale/id'  // without this line it didn't work
 
 const rowFlex = {
     display: 'flex', flexDirection: 'row'
@@ -13,9 +12,7 @@ const titleStyle = {
     minWidth: 225, width: '225px', fontSize: 20
 }
 
-const ModalDetailTroubleET = ({onClose, visible, data}) => {
-    moment.locale('es')
-    
+const ModalDetailTroubleET = ({onClose, visible, data}) => {    
     return (
       <>
         <Drawer
@@ -41,11 +38,11 @@ const ModalDetailTroubleET = ({onClose, visible, data}) => {
                 </div>
                 <div style={rowFlex}>
                     <label style={titleStyle}>Tanggal Masalah</label>
-                    <label style={{fontSize: 20}}>: {moment(data.tanggal_masalah, moment(data.tanggal_masalah).creationData().format).format('dddd, DD MMMM YYYY')} {data.jam_masalah}</label>
+                    <label style={{fontSize: 20}}>: {moment(data.tanggal_masalah, moment(data.tanggal_masalah).creationData().format).locale('id').format('dddd, DD MMMM YYYY')} {data.jam_masalah}</label>
                 </div>
                 <div style={rowFlex}>
                     <label style={titleStyle}>Tanggal Done</label>
-                    <label style={{fontSize: 20}}>: {moment(data.tanggal_done, moment(data.tanggal_done).creationData().format).format('dddd, DD MMMM YYYY')} {data.jam_done}</label>
+                    <label style={{fontSize: 20}}>: {moment(data.tanggal_done, moment(data.tanggal_done).creationData().format).locale('id').format('dddd, DD MMMM YYYY')} {data.jam_done}</label>
                 </div>
                 <div style={rowFlex}>
                     <label style={titleStyle}>Total Downtime</label>

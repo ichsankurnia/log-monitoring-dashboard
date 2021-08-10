@@ -1,9 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { DeleteFilled, EditOutlined, HomeOutlined } from '@ant-design/icons';
 import { Table, Popconfirm, Button } from 'antd';
+
 import FormAddUser from '../form/FormAddUser';
 import SocketContext from '../../context/SocketProvider';
 import Helper from '../../helpers/Helper';
-import { connect } from 'react-redux';
 
 
 var socket = null
@@ -168,32 +171,43 @@ class DataUser extends React.Component {
                 fixed: 'right',
                 render: (dataSelected) => 
                     dataTable.length > 1?
-                    user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
-                    <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
-                        </Popconfirm>
-                    </>
-                    : null : null
+                        user?.status.toLowerCase() === 'admin'?
+                            user?.no_user === dataSelected.no_user || dataSelected.status.toLowerCase() === 'backend'?
+                            <>
+                                <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
+                                <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
+                                    <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
+                                </Popconfirm>
+                            </>
+                            : null 
+                        : user?.no_user === dataSelected.no_user &&
+                        <>
+                            <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
+                        </> 
+                    : null
                 
             }
         ]
 
         return (
             <>
-            <div>
-                <h1>Data User</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New User</Button>
+            <div className='bg-blur'>
+                <h1 style={{color: 'white'}}>Data User</h1>
+                <Link className='ic-back' to='/admin/menu'>
+                    <HomeOutlined />
+                </Link>
+                {user?.status?.toLowerCase() === 'admin' && 
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New User</Button>
+                }
                 <Table 
                     rowKey='no_user'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    // pagination={false}
+                    pagination={{ pageSize: 8 }} 
                     scroll={{x: 'max-content'}}
                     // scroll={{ y: 380 }}
-                    // pagination={{ pageSize: 20 }}
                     size="small"
                 />
             </div>

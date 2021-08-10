@@ -1,0 +1,171 @@
+@font-face {
+    font-family: 'segoeuil';
+    src: url(../font/segoeuil.ttf);
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.txt-white {
+    color: white;
+}
+
+.row-sp {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bg-blur {
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(20, 30, 70, 0.4);
+    border-radius: 7px;
+}
+
+.background {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.img-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+}
+
+.img-tags {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: aliceblue;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bold;
+}
+
+.date-spotlight {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 50%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    font-family: 'segoeuil';
+}
+
+.dash-content {
+    width: 95%;
+    height: 85%;
+    max-width: 95vw;
+    max-height: 85vh;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: white; */
+}
+
+.dash-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 3vw;
+    backdrop-filter: blur(25px);
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dash-foot-refresh {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 15px;
+    backdrop-filter: blur(1px);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-left: #ede solid 1px;
+}
+
+.ic-footer {
+    font-size: 200%;
+    color: #37f;
+    margin-right: 12px;
+}
+
+.ic-footer:hover{
+    cursor: pointer;
+    font-size: 250%;
+    background-color: white;
+    padding: 3px;
+    border-radius: 50px;
+}
+
+
+.admin-menu {
+    width: 50%;
+    backdrop-filter: blur(15px);
+    background-color: rgba(20, 30, 70, 0.5);
+    padding: 20px 0 20px 20px;   /* top right bottom left */
+    border-radius: 7px;
+}
+.admin-menu > h1 {
+    color: white;
+    padding-left: 40px;
+    margin-bottom: 40px;
+}
+
+.admin-menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* background-color: white; */
+}
+
+.sub-admin-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 30%;
+    font-size: 20px;
+    margin-right: 20px;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+.sub-admin-menu:hover{
+    background-color: white;
+    border-radius: 100px;
+    color: #37f;
+}
+
+.ic-admin-menu {
+    font-size: 200%;
+    color: #37f;
+    margin-right: 10px;
+}
+
+.title-add {
+    color: #13c2c2;
+    font-weight: bold;
+}
+
+.ic-back {
+    position: absolute;
+    top: 30px;
+    right: 35px;
+    font-size: 20px;
+    color: white
+}

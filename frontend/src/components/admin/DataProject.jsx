@@ -1,5 +1,8 @@
-import { Table, Popconfirm, Button } from "antd"
 import React from "react"
+import { Link } from "react-router-dom"
+import { DeleteFilled, EditOutlined, HomeOutlined } from "@ant-design/icons"
+import { Table, Popconfirm, Button } from "antd"
+
 import SocketContext from "../../context/SocketProvider"
 import FormProjek from "../form/FormProjek"
 
@@ -100,7 +103,6 @@ class DataProjek extends React.Component {
                 key: 'no_projek',
                 sorter: (a, b) => a.no_projek - b.no_projek,
                 sortOrder: sortedInfo.columnKey === 'no_projek' && sortedInfo.order,
-                width: 150
             },
             {
                 title: "Nama Projek",
@@ -113,7 +115,6 @@ class DataProjek extends React.Component {
                 title: "Kode Projek",
                 dataIndex: "initial",
                 key: 'initial',
-                with: 150
             },
             {
                 title: "Active",
@@ -127,18 +128,16 @@ class DataProjek extends React.Component {
                 onFilter: (value, record) => {
                     return record.b_active.includes(value)
                 },
-                width: 150
             },
             {
                 title: "Action",
                 fixed: 'right',
-                width: 100,
                 render: (dataSelected) => 
                     dataTable.length > 1 &&
                     <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                            <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
                         </Popconfirm>
                     </>
                 
@@ -147,15 +146,20 @@ class DataProjek extends React.Component {
 
         return (
             <>
-            <div>
-                <h1>Data Projek</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Project</Button>
+            <div className='bg-blur'>
+                <h1 className='txt-white'>Data Projek</h1>
+                <Link className='ic-back' to='/admin/menu'>
+                    <HomeOutlined />
+                </Link>
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Project</Button>
                 <Table 
                     rowKey='no_projek'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    pagination={{ pageSize: 8 }}
+                    scroll={{x: 'max-content'}}
+                    size='small'
                 />
             </div>
             <FormProjek

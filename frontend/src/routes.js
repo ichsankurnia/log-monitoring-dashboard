@@ -1,4 +1,5 @@
 import HomeDashboard from "./components/HomeDashboard";
+import AdminMenu from "./components/admin/AdminMenu";
 import DataUser from "./components/admin/DataUser";
 import DataLokasi from "./components/admin/DataLokasi";
 import DataPart from "./components/admin/DataPart";
@@ -16,6 +17,11 @@ const routes = [
         path : "/index",
         layout: '/admin',
         component: HomeDashboard
+    },
+    {
+        path : "/menu",
+        layout: '/admin',
+        component: AdminMenu
     },
     {
         path : "/data-user",

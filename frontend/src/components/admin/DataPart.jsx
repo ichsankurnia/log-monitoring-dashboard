@@ -1,5 +1,8 @@
-import { Table, Popconfirm, Button } from "antd"
 import React from "react"
+import { Link } from "react-router-dom"
+import { DeleteFilled, EditOutlined, HomeOutlined } from "@ant-design/icons"
+import { Table, Popconfirm, Button } from "antd"
+
 import SocketContext from "../../context/SocketProvider"
 import FormPart from "../form/FormPart"
 
@@ -132,9 +135,9 @@ class DataPart extends React.Component {
                 render: (dataSelected) => 
                     dataTable.length > 1 &&
                     <>
-                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}>Edit</span>&nbsp;&nbsp;
+                        <span style={{cursor: 'pointer', color: "#39f"}} onClick={() => this.handleEditData(dataSelected)}><EditOutlined /></span>&nbsp;&nbsp;&nbsp;
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDeleteData(dataSelected)}>
-                            <span style={{cursor: 'pointer', color: "#f39"}}>Delete</span>
+                            <span style={{cursor: 'pointer', color: "#f39"}}><DeleteFilled /></span>
                         </Popconfirm>
                     </>
                 
@@ -143,15 +146,20 @@ class DataPart extends React.Component {
 
         return (
             <>
-            <div>
-                <h1>Data Part</h1>
-                <Button type="text" style={{color: '#13c2c2'}} onClick={this.handleAddData} >+ New Part</Button>
+            <div className='bg-blur'>
+                <h1 className='txt-white'>Data Part</h1>
+                <Link className='ic-back' to='/admin/menu'>
+                    <HomeOutlined />
+                </Link>
+                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Part</Button>
                 <Table 
                     rowKey='no_pvm'
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 7 }} 
+                    pagination={{ pageSize: 8 }}
+                    scroll={{x: 'max-content'}}
+                    size='small'
                 />
             </div>
             <FormPart
