@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'segoeuil';
+    src: url(../font/segoeuil.ttf);
+}
+
 .w-100 {
     width: 100%;
 }
@@ -11,6 +16,13 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.bg-blur {
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(20, 30, 70, 0.4);
+    border-radius: 7px;
 }
 
 .background {
@@ -40,6 +52,17 @@
     font-weight: bold;
 }
 
+.date-spotlight {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 50%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    font-family: 'segoeuil';
+}
+
 .dash-content {
     width: 95%;
     height: 85%;
@@ -58,7 +81,8 @@
     left: 0;
     width: 100vw;
     height: 3vw;
-    background-color: aliceblue;
+    backdrop-filter: blur(25px);
+    background-color: rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,31 +94,43 @@
     cursor: pointer;
     height: 100%;
     width: 15px;
-    background-color: gray;
+    backdrop-filter: blur(1px);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-left: #ede solid 1px;
 }
 
 .ic-footer {
     font-size: 200%;
     color: #37f;
-    margin-right: 10px;
+    margin-right: 12px;
 }
 
 .ic-footer:hover{
     cursor: pointer;
     font-size: 250%;
+    background-color: white;
+    padding: 3px;
+    border-radius: 50px;
 }
+
 
 .admin-menu {
     width: 50%;
-    background-color: transparent;
+    backdrop-filter: blur(15px);
+    background-color: rgba(20, 30, 70, 0.5);
+    padding: 20px 0 20px 20px;   /* top right bottom left */
+    border-radius: 7px;
+}
+.admin-menu > h1 {
+    color: white;
+    padding-left: 40px;
+    margin-bottom: 40px;
 }
 
 .admin-menu-container {
     display: flex;
     flex-wrap: wrap;
-    background-color: white;
-    padding: 30px 0 10px 20px;   /* top right bottom left */
-    border-radius: 7px;
+    /* background-color: white; */
 }
 
 .sub-admin-menu {
@@ -102,12 +138,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: black;
+    color: white;
     width: 30%;
     font-size: 20px;
     margin-right: 20px;
     margin-bottom: 30px;
     cursor: pointer;
+}
+.sub-admin-menu:hover{
+    background-color: white;
+    border-radius: 100px;
+    color: #37f;
 }
 
 .ic-admin-menu {
@@ -119,4 +160,12 @@
 .title-add {
     color: #13c2c2;
     font-weight: bold;
+}
+
+.ic-back {
+    position: absolute;
+    top: 30px;
+    right: 35px;
+    font-size: 20px;
+    color: white
 }
