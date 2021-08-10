@@ -243,7 +243,7 @@ class ExportDocumentation extends React.Component {
 
         return (
             <>
-            <div className='w-100'>
+            <div className='w-100 bg-blur'>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1 className='txt-white'>Documentation Trouble ET</h1>
                     <div className='row-sp'>

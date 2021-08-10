@@ -291,7 +291,7 @@ class TroubleET extends React.Component {
 
         return (
             <>
-            <div className='w-100'>
+            <div className='w-100 bg-blur'>
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1 style={{color: 'white'}}>Data Trouble ET</h1>
                     <div className='row-sp' style={{marginBottom: 10}}>
