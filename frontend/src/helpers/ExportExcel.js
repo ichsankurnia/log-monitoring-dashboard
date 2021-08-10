@@ -170,8 +170,8 @@ class ExportExcel {
                 { header: 'Jenis Pergantian', key: 'nama_part' },
                 { header: 'Problem', key: 'problem' },
                 { header: 'Solusi', key: 'solusi' },
-                { header: 'Picture Before', key: 'pic_before', width: 25 },
-                { header: 'Picture After', key: 'pic_after', width: 25 },
+                { header: 'Picture Before', key: 'pic_before', width: 27 },
+                { header: 'Picture After', key: 'pic_after', width: 27 },
             ];
     
             const workbook = new ExcelJS.Workbook();
@@ -234,7 +234,7 @@ class ExportExcel {
                 })
     
                 // console.log(row)
-                row.height = 70                                                                                                         // SET ROW HEIGHT
+                row.height = 90                                                                                                         // SET ROW HEIGHT
     
                 row._cells.forEach(cell => {
                     cell.border = border
@@ -250,7 +250,7 @@ class ExportExcel {
                 if(picBefore && picBefore.includes('base64')){
                     worksheet.addImage(workbook.addImage({base64: picBefore, extension: 'jpeg'}), {
                         // tl: { col: columns.length - 2 + 0.2, row: row._number - 1 + 0.1 }, br: { col: columns.length - 1 - 0.2, row: row._number - 0.1 }, editAs: 'absolute'
-                        tl: { col: columns.length - 2 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 160, height: 80 }
+                        tl: { col: columns.length - 2 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 175, height: 110 }
                     })
                 }else{
                     const cell = `${columnToLetter(columns.length - 1)}${row._number}`
@@ -262,7 +262,7 @@ class ExportExcel {
                 if(picAfter && picAfter.includes('base64')){
                     worksheet.addImage(workbook.addImage({base64: picAfter, extension: 'jpeg'}), {
                         // tl: { col: columns.length - 1 + 0.2, row: row._number - 1 + 0.1 }, br: { col: columns.length - 0.2, row: row._number - 0.1 }, editAs: 'oneCell'
-                        tl: { col: columns.length - 1 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 160, height: 80 }
+                        tl: { col: columns.length - 1 + 0.1, row: row._number - 1 + 0.2 }, ext: { width: 175, height: 110 }
                     })
                 }else{
                     const cell = `${columnToLetter(columns.length)}${row._number}`
