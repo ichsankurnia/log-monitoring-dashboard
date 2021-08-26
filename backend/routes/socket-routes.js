@@ -39,6 +39,9 @@ const socketRoutes = (req) => {
         case 'troubleET':
             response = troubleETAgent(prefix[1])
             break;
+        case 'common':
+            response = commonController(prefix[1])
+            break;
         default:
             break;
     }
@@ -225,6 +228,20 @@ const troubleETAgent = (suffix) => {
             break;
     }
 
+    return response
+}
+
+
+const commonController = (suffix) => {
+    let response = null
+    switch(suffix){
+        case 'apikey':
+            const apiKey = process.env.BG_API_KEY || '22810263-e572b6b0ebfab66c30ba7d497'
+            response = {code: 80, message: 'success get api key', data: {api_key: apiKey}}
+            break
+        default: 
+            break
+    }
     return response
 }
 
