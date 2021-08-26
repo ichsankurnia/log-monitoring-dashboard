@@ -10,7 +10,7 @@ const gntRandomNumber = () => {
 function App(props) {
 	return (
 		<SocketProvider id={gntRandomNumber()}>
-			<BrowserRouter>
+			<BrowserRouter basename="/ReactApp/log-apps-monitoring" >
 				<Switch>
 					<Route path="/auth" render={props => <Login {...props} />} />
 					<Route path="/admin" render={props => <Dashboard {...props} />} />
