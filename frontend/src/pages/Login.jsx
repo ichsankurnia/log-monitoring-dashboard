@@ -6,42 +6,37 @@ import {LoadingOutlined, TagsFilled} from '@ant-design/icons';
 // import { Link } from 'react-router-dom';
 import { authLogin } from '../api';
 import moment from 'moment';
+import { useSocket } from '../context/SocketProvider';
+
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
-const apiKey = '22810263-e572b6b0ebfab66c30ba7d497'
 const queryStrImg = 'image_type=photo&orientation=horizontal&category=backgrounds,nature,science,education,health,places,animals,industry,computer,food,sports,transportation,travel,buildings,business,music&pretty=true'
+
 
 const Login = () => {
     const [loading, setLoading] = useState(false)
     const [count, setCount] = useState(10)
     const [imgSource, setImgSource] = useState(null)
+    const [apiKey, setApiKey] = useState('22810263-e572b6b0ebfab66c30ba7d497')
     
     const interval = useRef(null)
     const history = useHistory()
+    const socket = useSocket()
     
     useEffect(() => {
-        fetchWallpaper()
-    }, [])
 
-    useEffect(() => {
-        interval.current = setInterval(() => {
-            if(count > 0){
-                setCount(count - 1)
-            }else{
-                fetchWallpaper()
-                setCount(10)
-            }
-        }, 1000)
-
-        return () => {
-            clearInterval(interval.current)
+        if(socket){
+            socket.emit('request', 'common_apikey')
+    
+            socket.on('response', res => {
+                console.log(res)
+                if(res.code === 80){
+                    setApiKey(res.data.apiKey || '22810263-e572b6b0ebfab66c30ba7d497')
+                }
+            })
         }
 
-    }, [count])
-
-    // console.log(count)
-    const fetchWallpaper = () => {
         const page = Math.floor(Math.random() * 100) + 1
         const index = Math.floor(Math.random() * 5)
 
@@ -55,7 +50,41 @@ const Login = () => {
         }).catch((err) => {
             console.log(err)
         })
-    }
+
+        return () => {
+            if(socket) socket.off('response')
+        }
+
+    }, [socket, apiKey])
+
+    useEffect(() => {
+        interval.current = setInterval(() => {
+            if(count > 0){
+                setCount(count - 1)
+            }else{
+                const page = Math.floor(Math.random() * 100) + 1
+                const index = Math.floor(Math.random() * 5)
+                
+                const order = ["popular", "latest"]
+                const indexOrder = Math.floor(Math.random() * 2)
+                console.log(order[indexOrder], page, index)
+
+                axios.get(`https://pixabay.com/api/?key=${apiKey}&${queryStrImg}&order=${order[indexOrder]}&page=${page}&per_page=5`)
+                .then((res) => {
+                    console.log(res)
+                    setImgSource(res.data.hits[index])
+                }).catch((err) => {
+                    console.log(err)
+                })
+                setCount(10)
+            }
+        }, 1000)
+
+        return () => {
+            clearInterval(interval.current)
+        }
+
+    }, [count, apiKey])
 
     const onFinish = async (values) => {
         setLoading(true)
