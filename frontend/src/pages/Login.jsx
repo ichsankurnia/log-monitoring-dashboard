@@ -11,7 +11,7 @@ import { useSocket } from '../context/SocketProvider';
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
-const queryStrImg = 'image_type=photo&orientation=horizontal&category=backgrounds,nature,science,education,health,places,animals,industry,computer,food,sports,transportation,travel,buildings,business,music&pretty=true'
+const queryStrImg = 'image_type=photo&orientation=horizontal&category=backgrounds,nature,science,education,health,places,animals,industry,computer,food,sports,transportation,travel,buildings,music&pretty=true'
 
 
 const Login = () => {
