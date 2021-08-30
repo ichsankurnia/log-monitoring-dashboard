@@ -1,4 +1,5 @@
 const app = require("express")();
+const open = require('open');
 const httpServer = require("http").createServer(app);
 const cors = require('cors')
 const bodyParser = require('body-parser');
@@ -71,4 +72,8 @@ app.use('/api/', route)
 
 httpServer.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`)
+    /** opens the url in the default browser **/
+    open(process.env.UI_URL);
+    /** Open the url in the specific browser */
+    // open(process.env.UI_URL, {app: 'firefox'});
 })
