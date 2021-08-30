@@ -289,6 +289,8 @@ class TroubleET extends React.Component {
             }
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='w-100 bg-blur'>
@@ -310,7 +312,7 @@ class TroubleET extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        // pagination={{ pageSize: 10 }}
+                        pagination={{ pageSize: hScreen/72 }}
                         scroll={{x: 'max-content'}}
                         size='small'
                         // searchableProps={{ fuzzySearch: true }}

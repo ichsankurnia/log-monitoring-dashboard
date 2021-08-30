@@ -241,6 +241,8 @@ class ExportDocumentation extends React.Component {
             }
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='w-100 bg-blur'>
@@ -275,8 +277,8 @@ class ExportDocumentation extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: 3 }}
-                        scroll={{x: 'max-content', y: 400}}
+                        pagination={{ pageSize: hScreen/256 }}
+                        scroll={{x: 'max-content', y: hScreen> 768? 650 : 370}}
                         size='small'
                     />
                     <Button icon={<ExportOutlined />} type="primary" shape="round" onClick={this.handleExportListTrouble} style={{position: 'absolute', left: 0, bottom: 10}}>

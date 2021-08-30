@@ -256,6 +256,8 @@ class ExportData extends React.Component {
             },
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='w-100 bg-blur'>
@@ -263,11 +265,11 @@ class ExportData extends React.Component {
                     <h1 className='txt-white'>Export Data Trouble ET</h1>
                     <div className='row-sp'>
                         <div>
-                            <label className='txt-white'>Filter By Tanggal Done</label>
+                            <label className='txt-white'>Filter By Tanggal Done </label>
                             <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
                         </div>
                         <div>
-                            <label className='txt-white'>Jenis Laporan</label>
+                            <label className='txt-white'>Jenis Laporan </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "jenislaporan")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 <Select.Option key="ADUAN">Aduan</Select.Option>
@@ -276,7 +278,7 @@ class ExportData extends React.Component {
                             </Select>
                         </div>
                         <div>
-                            <label className='txt-white'>Projek</label>
+                            <label className='txt-white'>Projek </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataProjek?.map(data => 
@@ -285,7 +287,7 @@ class ExportData extends React.Component {
                             </Select>
                         </div>
                         <div>
-                            <label className='txt-white'>Perangkat</label>
+                            <label className='txt-white'>Perangkat </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataPerangkat?.map(data => 
@@ -294,7 +296,7 @@ class ExportData extends React.Component {
                             </Select>
                         </div>
                         <div>
-                            <label className='txt-white'>Penyebab</label>
+                            <label className='txt-white'>Penyebab </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_penyebab")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataPenyebab?.map(data => 
@@ -303,7 +305,7 @@ class ExportData extends React.Component {
                             </Select>
                         </div>
                         <div>
-                            <label className='txt-white'>Status</label>
+                            <label className='txt-white'>Status </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "status")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 <Select.Option key="Done">Done</Select.Option>
@@ -317,7 +319,7 @@ class ExportData extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        // pagination={{ pageSize: 8 }}
+                        pagination={{ pageSize: hScreen/72 }}
                         scroll={{x: 'max-content'}}
                         size='small'
                     />
