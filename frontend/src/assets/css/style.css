@@ -7,6 +7,10 @@
     width: 100%;
 }
 
+.w-min-90h {
+    min-height: 90vh;
+}
+
 .txt-white {
     color: white;
 }
@@ -80,7 +84,7 @@
     bottom: 0;
     left: 0;
     width: 100vw;
-    height: 3vw;
+    height: 2.5vw;
     backdrop-filter: blur(25px);
     background-color: rgba(255, 255, 255, 0.1);
     display: flex;
@@ -97,6 +101,13 @@
     backdrop-filter: blur(1px);
     background-color: rgba(0, 0, 0, 0.1);
     border-left: #ede solid 1px;
+}
+
+.dash-foot-clock {
+    position: absolute;
+    right: 30px;
+    color: white;
+    margin: auto 0px;
 }
 
 .ic-footer {

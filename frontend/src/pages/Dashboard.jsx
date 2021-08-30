@@ -19,6 +19,7 @@ import wall5 from '../assets/img/wall5.jpg'
 import wall6 from '../assets/img/wall6.jpg'
 import { useState } from 'react';
 import { useRef } from 'react';
+import moment from 'moment';
 
 
 const wllps = [wallDark, wallLight, wall1, wall2, wall3, wall4, wall5, wall6]
@@ -110,6 +111,7 @@ const Dashboard = ({setUserData}) => {
                 <Link to="/admin/export/documentation">
                     <VideoCameraTwoTone className='ic-footer' />
                 </Link>
+                <p className='dash-foot-clock'>{moment().format('HH:mm')}</p>
                 <div className='dash-foot-refresh' onClick={handleRefresh}></div>
             </div>
         </div>
