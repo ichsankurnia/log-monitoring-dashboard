@@ -1,4 +1,6 @@
 import { Col, Row } from "antd"
+// import Col from 'antd/lib/col'
+// import Row from 'antd/lib/row'
 import { useRef } from "react"
 
 const ModalSetImage = ({onSetPicBefore, onSetPicAfter}) => {

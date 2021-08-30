@@ -1,7 +1,11 @@
-import { DeleteFilled, EditOutlined, HomeOutlined } from "@ant-design/icons"
-import { Table, Popconfirm, Button } from "antd"
 import React from "react"
 import { Link } from "react-router-dom"
+
+import { Table, Popconfirm, Button } from 'antd';
+import DeleteFilled from '@ant-design/icons/DeleteFilled'
+import EditOutlined from '@ant-design/icons/EditOutlined'
+import HomeOutlined from '@ant-design/icons/HomeOutlined'
+
 import SocketContext from "../../context/SocketProvider"
 import FormLokasi from "../form/FormLokasi"
 

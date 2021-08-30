@@ -1,8 +1,8 @@
 import React from 'react'
-import { Drawer, Form, Button, Input, Select } from 'antd';
-import PropTypes from 'prop-types';
-import TextArea from 'antd/lib/input/TextArea';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Drawer, Form, Button, Input, Select } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 
 
 const { Option } = Select

@@ -1,9 +1,10 @@
 import React from "react"
 import moment from "moment"
 import { connect } from "react-redux";
-import { Button, Spin, DatePicker, Select } from "antd"
-import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Table } from "ant-table-extensions";
+import { Button, DatePicker, Select, Spin } from "antd";
+import ExportOutlined from '@ant-design/icons/ExportOutlined';
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 
 import SocketContext from "../../context/SocketProvider";
 import { getAllTroubleET } from "../../api"

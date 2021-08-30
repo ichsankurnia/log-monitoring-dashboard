@@ -1,16 +1,17 @@
 import React from "react"
 import moment from "moment"
 import { connect } from "react-redux";
-import { Button, Spin, DatePicker, Select } from "antd"
-import { ExportOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Table } from "ant-table-extensions";
+import Modal from "antd/lib/modal/Modal";
+import { Button, Spin, DatePicker, Select } from "antd"
+import ExportOutlined from '@ant-design/icons/ExportOutlined';
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 
 import SocketContext from "../../context/SocketProvider";
 import { getListDocumentation } from "../../api"
 
 import ExportExcel from "../../helpers/ExportExcel";
 import Helper from "../../helpers/Helper";
-import Modal from "antd/lib/modal/Modal";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 

@@ -1,9 +1,18 @@
 import { useEffect } from 'react';
+import { useState } from 'react';
+import { useRef } from 'react';
+import moment from 'moment';
 import { Route, Switch, Redirect, useHistory, Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
-import { ExportOutlined, VideoCameraTwoTone, AppstoreFilled, TableOutlined } from '@ant-design/icons';
+
+// import { ExportOutlined, VideoCameraTwoTone, AppstoreFilled, TableOutlined } from '@ant-design/icons';
+import ExportOutlined from '@ant-design/icons/ExportOutlined';
+import VideoCameraTwoTone from '@ant-design/icons/VideoCameraTwoTone';
+import AppstoreFilled from '@ant-design/icons/AppstoreFilled';
+import TableOutlined from '@ant-design/icons/TableOutlined';
+
 
 import routes from '../routes';
 import { authLogout } from '../api';
@@ -17,9 +26,6 @@ import wall3 from '../assets/img/wall3.jpg'
 import wall4 from '../assets/img/wall4.jpg'
 import wall5 from '../assets/img/wall5.jpg'
 import wall6 from '../assets/img/wall6.jpg'
-import { useState } from 'react';
-import { useRef } from 'react';
-import moment from 'moment';
 
 
 const wllps = [wallDark, wallLight, wall1, wall2, wall3, wall4, wall5, wall6]

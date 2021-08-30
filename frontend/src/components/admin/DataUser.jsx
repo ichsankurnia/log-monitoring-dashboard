@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { DeleteFilled, EditOutlined, HomeOutlined } from '@ant-design/icons';
 import { Table, Popconfirm, Button } from 'antd';
+import DeleteFilled from '@ant-design/icons/DeleteFilled'
+import EditOutlined from '@ant-design/icons/EditOutlined'
+import HomeOutlined from '@ant-design/icons/HomeOutlined'
 
 import FormAddUser from '../form/FormAddUser';
 import SocketContext from '../../context/SocketProvider';

@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
+
 import { Form, Input, Button, Spin } from 'antd';
-import {LoadingOutlined, TagsFilled} from '@ant-design/icons';
+
+// import {LoadingOutlined, TagsFilled} from '@ant-design/icons';
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
+import TagsFilled from '@ant-design/icons/TagsFilled';
+
 // import { Link } from 'react-router-dom';
 import { authLogin } from '../api';
 import moment from 'moment';

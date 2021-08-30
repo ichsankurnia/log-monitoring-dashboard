@@ -1,11 +1,16 @@
+import React from "react"
+import moment from "moment"
+import { connect } from "react-redux";
+
 import { /* Table,  */Popconfirm, Button, Spin, DatePicker } from "antd"
 import { Table } from "ant-table-extensions";
-import { DeleteFilled, EditOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons';
-import moment from "moment"
-import React from "react"
+import DeleteFilled from "@ant-design/icons/DeleteFilled";
+import EditOutlined from "@ant-design/icons/EditOutlined";
+import EyeTwoTone from "@ant-design/icons/EyeTwoTone";
+import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
+
 import { addNewTroubleET, deleteTroubleET, getAllTroubleET, getDetailTroubleET, getOneTroubleET, updateTroubleET } from "../../api"
 import FormTroubleET from "../form/FormTroubleET"
-import { connect } from "react-redux";
 import ModalDetailTroubleET from "../modal/ModalDetailTroubleET";
 
 const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;

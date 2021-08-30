@@ -1,9 +1,19 @@
 import { Link, useHistory } from "react-router-dom"
 import jwtDecode from "jwt-decode"
-import { BugFilled, CheckCircleFilled, EnvironmentFilled, ExclamationCircleOutlined, FundProjectionScreenOutlined, GoldFilled, LogoutOutlined, SettingFilled, UsergroupAddOutlined } from "@ant-design/icons"
+
+import { Modal } from 'antd';
+// import { BugFilled, CheckCircleFilled, EnvironmentFilled, ExclamationCircleOutlined, FundProjectionScreenOutlined, GoldFilled, LogoutOutlined, SettingFilled, UsergroupAddOutlined } from "@ant-design/icons"
+import BugFilled from "@ant-design/icons/BugFilled"
+import CheckCircleFilled from "@ant-design/icons/CheckCircleFilled"
+import EnvironmentFilled from "@ant-design/icons/EnvironmentFilled"
+import ExclamationCircleOutlined from "@ant-design/icons/ExclamationCircleOutlined"
+import FundProjectionScreenOutlined from "@ant-design/icons/FundProjectionScreenOutlined"
+import GoldFilled from "@ant-design/icons/GoldFilled"
+import LogoutOutlined from "@ant-design/icons/LogoutOutlined"
+import SettingFilled from "@ant-design/icons/SettingFilled"
+import UsergroupAddOutlined from "@ant-design/icons/UsergroupAddOutlined"
 
 import { authLogout } from "../../api"
-import { Modal } from 'antd';
 import { connect } from "react-redux";
 
 const AdminMenu = ({user}) => {
