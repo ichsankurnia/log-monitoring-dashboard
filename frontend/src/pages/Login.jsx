@@ -25,7 +25,12 @@ const Login = () => {
     const socket = useSocket()
     
     useEffect(() => {
+        if(localStorage.getItem('authToken')){
+            history.push('/')
+        }
+    }, [history])
 
+    useEffect(() => {
         if(socket){
             socket.emit('request', 'common_apikey')
     
@@ -122,12 +127,12 @@ const Login = () => {
                     <Form.Item label={<label style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}>Username</label>} name="username"
                         rules={[ { required: true, message: 'Please input your username!' }]}
                     >
-                        <Input placeholder='Enter your username' />
+                        <Input placeholder='Enter your username' style={{borderRadius: 5}} />
                     </Form.Item>
                     <Form.Item label={<label style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}>Password</label>} name="password"
                         rules={[{ required: true, message: 'Please input your password!'}]}
                     >
-                        <Input.Password placeholder='Enter your password' />
+                        <Input.Password placeholder='Enter your password' style={{borderRadius: 5}} />
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" style={{width: '100%', height: 40, marginTop: 10, borderRadius: 5}}>
