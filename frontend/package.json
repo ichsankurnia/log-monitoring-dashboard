@@ -1,17 +1,17 @@
 {
   "name": "log-apps-monitoring",
-  "homepage": "https://ories.goes2nobel.com/ReactApp/log-apps-monitoring",
+  "homepage": "http://his.nutech-integrasi.com/opr-logmonitoring",
   "description": "frontend log apps monitoring",
   "version": "1.0.0",
   "author": "ichsankurnia",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^4.6.2",
+    "@ant-design/icons": "^4.0.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "ant-table-extensions": "^1.1.7",
-    "antd": "^4.14.0",
+    "antd": "^4.16.13",
     "axios": "^0.21.1",
     "exceljs": "^4.2.1",
     "file-saver": "^2.0.5",
@@ -27,9 +27,9 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "start": "set PORT=1213 && react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "set PORT=1213 && react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -51,6 +51,16 @@
     ]
   },
   "keywords": [
-    "react", "axios", "socketio", "redux", "antdesign"
-  ]
+    "react",
+    "axios",
+    "socketio",
+    "redux",
+    "antdesign",
+    "cd /mnt/d"
+  ],
+  "devDependencies": {
+    "babel-plugin-import": "^1.13.3",
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.1.8"
+  }
 }
