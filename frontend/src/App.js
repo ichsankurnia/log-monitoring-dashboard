@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, HashRouter } from "react-router-dom";
 import { SocketProvider } from "./context/SocketProvider";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -10,7 +10,9 @@ const gntRandomNumber = () => {
 function App(props) {
 	return (
 		<SocketProvider id={gntRandomNumber()}>
-			<BrowserRouter basename="/ReactApp/log-apps-monitoring" >
+			{/* <BrowserRouter basename="/ReactApp/log-apps-monitoring" > */}
+			{/* <BrowserRouter basename="/opr-logmonitoring" > */}
+			<HashRouter>
 				<Switch>
 					<Route path="/auth" render={props => <Login {...props} />} />
 					<Route path="/admin" render={props => <Dashboard {...props} />} />
@@ -21,7 +23,8 @@ function App(props) {
 					{/* <Route path="*" component={NotFoundPage} /> */}
 				</Switch>
 				{/* <Login /> */}
-			</BrowserRouter>
+			{/* </BrowserRouter> */}
+			</HashRouter>
 		</SocketProvider>
 	);
 }
