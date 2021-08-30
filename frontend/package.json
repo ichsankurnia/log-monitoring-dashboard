@@ -2,7 +2,7 @@
   "name": "log-apps-monitoring",
   "homepage": "https://ories.goes2nobel.com/ReactApp/log-apps-monitoring",
   "description": "frontend log apps monitoring",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "ichsankurnia",
   "private": true,
   "dependencies": {
