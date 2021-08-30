@@ -12,23 +12,23 @@ const queryGetAllTrouble =
         PART.no_pvm, PART.nama_perangkat as nama_part,
         problem, MasalahTerbanyak.no_penyebab, PEN.penyebab,
         solusi, status, no_user, sumber, refnumber, refnotrouble, teknisi, totaldowntime, arah_gate, counts
-    FROM public.trouble_et 
+    FROM ${tableName} 
     LEFT JOIN (
         SELECT count(*) as counts, no_penyebab
-        FROM public.trouble_et 
+        FROM ${tableName} 
         GROUP BY no_penyebab
     ) as MasalahTerbanyak
-    ON MasalahTerbanyak.no_penyebab = public.trouble_et.no_penyebab
+    ON MasalahTerbanyak.no_penyebab = ${tableName}.no_penyebab
     LEFT JOIN public.projek as PROJ
-    ON PROJ.no_projek = public.trouble_et.no_projek
+    ON PROJ.no_projek = ${tableName}.no_projek
     LEFT JOIN public.stasiun as LOK
-    ON LOK.ip = public.trouble_et.ip
+    ON LOK.ip = ${tableName}.ip
     LEFT JOIN public.et as PER
-    ON PER.no_perangkat = public.trouble_et.no_perangkat
+    ON PER.no_perangkat = ${tableName}.no_perangkat
     LEFT JOIN public.perangkat_vm as PART
-    ON PART.no_pvm = public.trouble_et.no_pvm
+    ON PART.no_pvm = ${tableName}.no_pvm
     LEFT JOIN public.penyebab as PEN
-    ON PEN.no_penyebab = public.trouble_et.no_penyebab 
+    ON PEN.no_penyebab = ${tableName}.no_penyebab 
     ORDER BY counts IS NULL ASC, counts DESC, tanggal_done DESC
 `
 
@@ -69,17 +69,17 @@ class TroubleET {
             PART.no_pvm, PART.nama_perangkat as nama_part,
             problem, PEN.no_penyebab, PEN.penyebab,
             solusi, no_user, sumber, refnumber, refnotrouble, teknisi, totaldowntime, arah_gate, status, pic_before, pic_after
-        FROM public.trouble_et 
+        FROM ${tableName} 
         LEFT JOIN public.projek as PROJ
-        ON PROJ.no_projek = public.trouble_et.no_projek
+        ON PROJ.no_projek = ${tableName}.no_projek
         LEFT JOIN public.stasiun as LOK
-        ON LOK.ip = public.trouble_et.ip
+        ON LOK.ip = ${tableName}.ip
         LEFT JOIN public.et as PER
-        ON PER.no_perangkat = public.trouble_et.no_perangkat
+        ON PER.no_perangkat = ${tableName}.no_perangkat
         LEFT JOIN public.perangkat_vm as PART
-        ON PART.no_pvm = public.trouble_et.no_pvm
+        ON PART.no_pvm = ${tableName}.no_pvm
         LEFT JOIN public.penyebab as PEN
-        ON PEN.no_penyebab = public.trouble_et.no_penyebab 
+        ON PEN.no_penyebab = ${tableName}.no_penyebab 
         WHERE no = '${identity.no}'
         `
         console.log(sql)
@@ -152,15 +152,15 @@ class TroubleET {
             PER.no_perangkat, PER.nama_perangkat, PER.id as id_perangkat,
             PART.no_pvm, PART.nama_perangkat as nama_part,
             problem, solusi, pic_before, pic_after
-        FROM public.trouble_et 
+        FROM ${tableName} 
         LEFT JOIN public.projek as PROJ
-            ON PROJ.no_projek = public.trouble_et.no_projek
+            ON PROJ.no_projek = ${tableName}.no_projek
         LEFT JOIN public.stasiun as LOK
-            ON LOK.ip = public.trouble_et.ip
+            ON LOK.ip = ${tableName}.ip
         LEFT JOIN public.et as PER
-            ON PER.no_perangkat = public.trouble_et.no_perangkat
+            ON PER.no_perangkat = ${tableName}.no_perangkat
         LEFT JOIN public.perangkat_vm as PART
-            ON PART.no_pvm = public.trouble_et.no_pvm
+            ON PART.no_pvm = ${tableName}.no_pvm
         WHERE pic_before IS NOT NULL 
             OR pic_after IS NOT NULL
         ORDER BY tanggal_done desc
