@@ -28,10 +28,19 @@ const FormAddUser = ({onClose, onSubmit, visible, data, user}) => {
             status: form.getFieldValue('status') || "",
             b_active: form.getFieldValue('b_active') || "t"
         }
-
-        onSubmit(payload)
-        form.resetFields()
+        
+        if(payload.username==='' || payload.password==='' || payload.status===''){
+            alert('Username, Password, Status is Required')
+        }else{
+            onSubmit(payload)
+            form.resetFields()
+        }
+        
     }
+
+    const onFinishFailed = (errorInfo) => {
+        alert(errorInfo)
+    };
 
     return (
         <>
@@ -54,7 +63,7 @@ const FormAddUser = ({onClose, onSubmit, visible, data, user}) => {
                     </div>
                 }
             >
-                <Form form={form} layout="vertical" hideRequiredMark>
+                <Form form={form} layout="vertical" hideRequiredMark onSubmit={handleSubmit} onFinish={handleSubmit} onFinishFailed={onFinishFailed}>
                     <Form.Item name="nama_user" label="Full Name" rules={[{ required: true, message: 'Please enter fullname' }]}>
                         <Input placeholder="Please enter fullname" />
                     </Form.Item>
