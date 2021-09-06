@@ -73,7 +73,7 @@ app.use('/api/', route)
 httpServer.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`)
     /** opens the url in the default browser **/
-    open(process.env.UI_URL);
+    //open(process.env.UI_URL);
     /** Open the url in the specific browser */
     // open(process.env.UI_URL, {app: 'firefox'});
 })
