@@ -1,6 +1,12 @@
+import logoNutechNoTrans from '../assets/img/logo-nutech-no-trans.jpg'
+import logoNutech from '../assets/img/logo-nutech.png'
+
 const HomeDashboard = () => {
     return (
-        <div>Home Dashboard</div>
+        <div style={{position: 'fixed', top: 10, left: 10}}>
+            {/* <img src={logoNutechNoTrans} alt="" width={350} /> */}
+            <img src={logoNutech} alt="" />
+        </div>
     )
 }
 
