@@ -147,6 +147,8 @@ class DataProjek extends React.Component {
             }
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='bg-blur'>
@@ -160,8 +162,8 @@ class DataProjek extends React.Component {
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 8 }}
-                    scroll={{x: 'max-content'}}
+                    pagination={{ pageSize: hScreen/96 }}
+                    scroll={{x: hScreen>768? 960 : 840}}
                     size='small'
                 />
             </div>

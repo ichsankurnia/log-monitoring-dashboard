@@ -191,6 +191,8 @@ class DataUser extends React.Component {
             }
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='bg-blur'>
@@ -207,8 +209,8 @@ class DataUser extends React.Component {
                     dataSource={dataTable}
                     onChange={this.handleChange}
                     // pagination={false}
-                    pagination={{ pageSize: 8 }} 
-                    scroll={{x: 'max-content'}}
+                    pagination={{ pageSize: hScreen/96 }} 
+                    scroll={{x: hScreen>768? 960 : 840}}
                     // scroll={{ y: 380 }}
                     size="small"
                 />

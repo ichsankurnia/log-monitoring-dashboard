@@ -163,6 +163,8 @@ class DataPenyebab extends React.Component {
             }
         ]
 
+        const hScreen = window.screen.height
+
         return (
             <>
             <div className='bg-blur'>
@@ -176,7 +178,7 @@ class DataPenyebab extends React.Component {
                     columns={columns}
                     dataSource={dataTable}
                     onChange={this.handleChange}
-                    pagination={{ pageSize: 8 }}
+                    pagination={{ pageSize: hScreen/96 }}
                     scroll={{x: 'max-content'}}
                     size='small'
                 />
