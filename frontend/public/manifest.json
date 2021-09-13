@@ -1,16 +1,11 @@
 {
-  "short_name": "Log Monitoring Apps",
-  "name": "Backend monitoring log application",
+  "short_name": "Log Trouble Monitoring",
+  "name": "Backend monitoring log trouble application",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
+      "src": "logo-nutech.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "400x172"
     }
   ],
   "start_url": ".",
