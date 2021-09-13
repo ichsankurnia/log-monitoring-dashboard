@@ -263,7 +263,8 @@ class FormTroubleET extends React.Component {
 
 
     render(){
-        const { onClose, data } = this.props
+        const { onClose, data, datetimeNow } = this.props
+        // console.log(datetimeNow)
         const { projek, lokasi, perangkat, part, penyebab, solusi, jenisLaporan, status, loading, pic_before, pic_after, size_imgBefore, size_imgafter } = this.state
 
         return (
@@ -291,7 +292,7 @@ class FormTroubleET extends React.Component {
                         <DatePicker.RangePicker
                             showTime={{
                                 // hideDisabledOptions: true,
-                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                                defaultValue: [moment(datetimeNow, 'HH:mm:ss'), moment(datetimeNow, 'HH:mm:ss')],
                             }}
                             format={datetimeFormat}
                         />
@@ -475,7 +476,7 @@ class FormTroubleET extends React.Component {
                 {/* {!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' && */}
                     <Checkbox 
                         checked={this.state.sendEmail}
-                        disabled={!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' ? false : true}
+                        disabled={!data && jenisLaporan?.toLocaleLowerCase() === 'permasalahan' && status.toLowerCase() === 'open' ? false : true}
                         onChange={(e) => this.setState({sendEmail: e.target.checked})}
                     >
                         Send Email
@@ -498,7 +499,8 @@ FormTroubleET.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        datetimeNow: state.datetime
     }
 }
 
