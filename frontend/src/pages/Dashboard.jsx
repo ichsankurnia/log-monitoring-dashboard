@@ -16,7 +16,7 @@ import TableOutlined from '@ant-design/icons/TableOutlined';
 
 import routes from '../routes';
 import { authLogout } from '../api';
-import { setUserData } from '../redux/action/actions';
+import { setUserData, setTimeNow } from '../redux/action/actions';
 
 import wallDark from '../assets/img/win11-wall-dark.jpg'
 import wallLight from '../assets/img/win11-wall-light.jpg'
@@ -27,10 +27,12 @@ import wall4 from '../assets/img/wall4.jpg'
 import wall5 from '../assets/img/wall5.jpg'
 import wall6 from '../assets/img/wall6.jpg'
 
+import 'moment/locale/id'  // without this line it didn't work
+moment.locale('id')
 
 const wllps = [wallDark, wallLight, wall1, wall2, wall3, wall4, wall5, wall6]
 
-const Dashboard = ({setUserData}) => {
+const Dashboard = ({setUserData, setTimeNow}) => {
     const [count, setCount] = useState(10)
     const [indexWall, setIndexWall] = useState(0)
     const history = useHistory()
@@ -76,6 +78,10 @@ const Dashboard = ({setUserData}) => {
             history.push('/auth')
         }
     }, [history, setUserData])
+
+    useEffect(() => {
+        setTimeNow(moment().format('HH:mm:ss'))
+    })
 
     // MAIN ROUTE
 	const getRoutes = (routes) => {
@@ -131,7 +137,7 @@ const Dashboard = ({setUserData}) => {
 // }
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({setUserData}, dispatch)
+    return bindActionCreators({setUserData, setTimeNow}, dispatch)
 }
 
 export default connect(null, mapDispatchToProps)(Dashboard)
