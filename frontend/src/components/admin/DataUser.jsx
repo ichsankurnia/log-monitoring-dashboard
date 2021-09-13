@@ -1,15 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Table, Popconfirm, Button } from 'antd';
+import { /* Table, */ Popconfirm, Button, Spin } from 'antd';
+import { Table } from "ant-table-extensions";
 import DeleteFilled from '@ant-design/icons/DeleteFilled'
 import EditOutlined from '@ant-design/icons/EditOutlined'
 import HomeOutlined from '@ant-design/icons/HomeOutlined'
+import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 
 import FormAddUser from '../form/FormAddUser';
 import SocketContext from '../../context/SocketProvider';
 import Helper from '../../helpers/Helper';
 
+
+const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
 var socket = null
 
@@ -24,6 +28,7 @@ class DataUser extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showForm: false,
+            showLoader: true,
             rowDataSelected: {},
             isUpdate: false,
             no_user: 0
@@ -58,6 +63,7 @@ class DataUser extends React.Component {
             }else{
                 alert(res.message)
             }
+            this.setState({showLoader: false})
         })
     }
 
@@ -82,6 +88,7 @@ class DataUser extends React.Component {
     }
 
     handleSubmitData = (submittedData) => {
+        this.setState({showLoader: true})
         const { nama_user, username, password, alamat, telepon, status, b_active } = submittedData
         if(!this.state.isUpdate){
             console.log("SUBMIT ADD DATA", submittedData)
@@ -99,7 +106,7 @@ class DataUser extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected, showLoader } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -196,24 +203,27 @@ class DataUser extends React.Component {
         return (
             <>
             <div className='bg-blur'>
-                <h1 style={{color: 'white'}}>Data User</h1>
-                <Link className='ic-back' to='/admin/menu'>
-                    <HomeOutlined />
-                </Link>
-                {user?.status?.toLowerCase() === 'admin' && 
-                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New User</Button>
-                }
-                <Table 
-                    rowKey='no_user'
-                    columns={columns}
-                    dataSource={dataTable}
-                    onChange={this.handleChange}
-                    // pagination={false}
-                    pagination={{ pageSize: hScreen/96 }} 
-                    scroll={{x: hScreen>768? 960 : 840}}
-                    // scroll={{ y: 380 }}
-                    size="small"
-                />
+                <Spin spinning={showLoader} delay={500} indicator={loader} size='large'>
+                    <h1 style={{color: 'white'}}>Data User</h1>
+                    <Link className='ic-back' to='/admin/menu'>
+                        <HomeOutlined />
+                    </Link>
+                    {user?.status?.toLowerCase() === 'admin' && 
+                    <Button type="text" className='title-add' onClick={this.handleAddData} >+ New User</Button>
+                    }
+                    <Table 
+                        rowKey='no_user'
+                        columns={columns}
+                        dataSource={dataTable}
+                        onChange={this.handleChange}
+                        // pagination={false}
+                        pagination={{ pageSize: hScreen/96 }} 
+                        scroll={{x: 'max-content'}}
+                        // scroll={{ y: 380 }}
+                        size="small"
+                        searchable
+                    />
+                </Spin>
             </div>
             <FormAddUser
                 visible={showForm}

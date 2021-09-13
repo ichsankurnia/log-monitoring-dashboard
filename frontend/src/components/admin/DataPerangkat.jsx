@@ -1,13 +1,17 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { Table, Popconfirm, Button } from 'antd';
+import { /* Table, */ Popconfirm, Button, Spin } from 'antd';
+import { Table } from "ant-table-extensions";
 import DeleteFilled from '@ant-design/icons/DeleteFilled'
 import EditOutlined from '@ant-design/icons/EditOutlined'
 import HomeOutlined from '@ant-design/icons/HomeOutlined'
+import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 
 import SocketContext from "../../context/SocketProvider"
 import FormPerangkat from "../form/FormPerangkat"
+
+const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
 let socket = null
 
@@ -22,6 +26,7 @@ class DataPerangkat extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showForm: false,
+            showLoader: true,
             rowDataSelected: {},
             isUpdate: false,
             no_perangkat: 0
@@ -56,6 +61,7 @@ class DataPerangkat extends React.Component {
             }else{
                 alert(res.message)
             }
+            this.setState({showLoader: false})
         })
     }
 
@@ -80,6 +86,7 @@ class DataPerangkat extends React.Component {
     }
 
     handleSubmitData = (submittedData) => {
+        this.setState({showLoader: true})
         const { nama_perangkat, id, type, ip, b_active } = submittedData
         if(!this.state.isUpdate){
             console.log("SUBMIT ADD DATA", submittedData)
@@ -97,7 +104,7 @@ class DataPerangkat extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected, showLoader } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -166,20 +173,23 @@ class DataPerangkat extends React.Component {
         return (
             <>
             <div className='bg-blur'>
-                <h1 className='txt-white'>Data Perangkat</h1>
-                <Link className='ic-back' to='/admin/menu'>
-                    <HomeOutlined />
-                </Link>
-                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Device</Button>
-                <Table 
-                    rowKey='no_perangkat'
-                    columns={columns}
-                    dataSource={dataTable}
-                    onChange={this.handleChange}
-                    pagination={{ pageSize: hScreen/96 }}
-                    scroll={{x: hScreen>768? 960 : 840}}
-                    size='small'
-                />
+                <Spin spinning={showLoader} delay={500} indicator={loader} size='large'>
+                    <h1 className='txt-white'>Data Perangkat</h1>
+                    <Link className='ic-back' to='/admin/menu'>
+                        <HomeOutlined />
+                    </Link>
+                    <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Device</Button>
+                    <Table 
+                        rowKey='no_perangkat'
+                        columns={columns}
+                        dataSource={dataTable}
+                        onChange={this.handleChange}
+                        pagination={{ pageSize: hScreen/96 }}
+                        scroll={{x: 'max-content'}}
+                        size='small'
+                        searchable
+                    />
+                </Spin>
             </div>
             <FormPerangkat
                 visible={showForm}

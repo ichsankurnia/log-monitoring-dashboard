@@ -1,12 +1,16 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Table, Popconfirm, Button } from 'antd';
+import { /* Table, */ Popconfirm, Button, Spin } from 'antd';
+import { Table } from "ant-table-extensions";
 import DeleteFilled from '@ant-design/icons/DeleteFilled'
 import EditOutlined from '@ant-design/icons/EditOutlined'
 import HomeOutlined from '@ant-design/icons/HomeOutlined'
+import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 
 import SocketContext from "../../context/SocketProvider"
 import FormSolusi from "../form/FormSolusi"
+
+const loader = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
 let socket = null
 
@@ -21,6 +25,7 @@ class DataSolusi extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showForm: false,
+            showLoader: true,
             rowDataSelected: {},
             isUpdate: false,
             id_solusi: 0
@@ -55,6 +60,7 @@ class DataSolusi extends React.Component {
             }else{
                 alert(res.message)
             }
+            this.setState({showLoader: false})
         })
     }
 
@@ -79,6 +85,7 @@ class DataSolusi extends React.Component {
     }
 
     handleSubmitData = (submittedData) => {
+        this.setState({showLoader: true})
         const { nama_solusi, no_penyebab, b_active } = submittedData
         if(!this.state.isUpdate){
             console.log("SUBMIT ADD DATA", submittedData)
@@ -96,7 +103,7 @@ class DataSolusi extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showForm, rowDataSelected, showLoader } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -160,20 +167,23 @@ class DataSolusi extends React.Component {
         return (
             <>
             <div className='bg-blur'>
-                <h1 className='txt-white'>Data Solusi</h1>
-                <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Solution</Button>
-                <Link className='ic-back' to='/admin/menu'>
-                    <HomeOutlined />
-                </Link>
-                <Table 
-                    rowKey='id_solusi'
-                    columns={columns}
-                    dataSource={dataTable}
-                    onChange={this.handleChange}
-                    pagination={{ pageSize: hScreen/96 }}
-                    scroll={{x: 'max-content'}}
-                    size='small'
-                />
+                <Spin spinning={showLoader} delay={500} indicator={loader} size='large'>
+                    <h1 className='txt-white'>Data Solusi</h1>
+                    <Button type="text" className='title-add' onClick={this.handleAddData} >+ New Solution</Button>
+                    <Link className='ic-back' to='/admin/menu'>
+                        <HomeOutlined />
+                    </Link>
+                    <Table 
+                        rowKey='id_solusi'
+                        columns={columns}
+                        dataSource={dataTable}
+                        onChange={this.handleChange}
+                        pagination={{ pageSize: hScreen/96 }}
+                        scroll={{x: 'max-content'}}
+                        size='small'
+                        searchable
+                    />
+                </Spin>
             </div>
             <FormSolusi
                 visible={showForm}
