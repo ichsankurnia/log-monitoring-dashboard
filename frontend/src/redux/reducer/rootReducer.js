@@ -8,6 +8,11 @@ const rootReducer = (state = initialState, action) => {
                 ...state,
                 user: action.data
             }
+        case ActionType.SET_DATETIME_NOW:
+            return {
+                ...state,
+                datetime: action.data
+            }
         default:
             return state
     }
