@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const baseURL = "http://localhost:1212"
-// export const baseURL = 'https://heroku-node-whatasappbe.herokuapp.com'
+// export const baseURL = "http://localhost:1212"                          // Local
+export const baseURL = 'http://100.100.200.245:1212'                    // Server Operational
 
 const api = axios.create({
     baseURL: baseURL,
