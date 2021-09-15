@@ -22,6 +22,11 @@
     align-items: center;
 }
 
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
 .bg-blur {
     padding: 20px;
     backdrop-filter: blur(10px);
