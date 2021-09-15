@@ -55,8 +55,7 @@ class DataSolusi extends React.Component {
             console.log(res)
             if(res.code === 60 || res.code === 61 || res.code === 62 || res.code === 63){
                 this.setState({dataTable: res.data})
-            }else if(res.code === 50){
-                console.log(res.message)
+            }else if(res.code === 50 || res.code === 10 || res.code === 30 ){
             }else{
                 alert(res.message)
             }

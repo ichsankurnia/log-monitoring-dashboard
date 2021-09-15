@@ -56,6 +56,7 @@ class DataProjek extends React.Component {
             console.log(res)
             if(res.code === 10 || res.code === 11 || res.code === 12 || res.code === 13){
                 this.setState({dataTable: res.data})
+            }else if(res.code === 30 || res.code === 50){
             }else{
                 alert(res.message)
             }

@@ -56,8 +56,7 @@ class DataPerangkat extends React.Component {
             console.log(res)
             if(res.code === 30 || res.code === 31 || res.code === 32 || res.code === 33){
                 this.setState({dataTable: res.data})
-            }else if(res.code === 20){
-                console.log(res.message)
+            }else if(res.code === 20 || res.code === 10 || res.code === 50){
             }else{
                 alert(res.message)
             }

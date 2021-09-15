@@ -56,6 +56,7 @@ class DataPart extends React.Component {
             console.log(res)
             if(res.code === 40 || res.code === 41 || res.code === 42 || res.code === 43){
                 this.setState({dataTable: res.data})
+            }else if(res.code === 10 || res.code === 30 || res.code === 50){
             }else{
                 alert(res.message)
             }

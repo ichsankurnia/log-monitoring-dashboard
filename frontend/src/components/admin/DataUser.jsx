@@ -60,7 +60,8 @@ class DataUser extends React.Component {
             console.log(res)
             if(res.code === 0 || res.code === 1 || res.code === 2 || res.code === 3){
                 this.setState({dataTable: res.data})
-            }else{
+            }else if(res.code === 10 || res.code === 30 || res.code === 50){}
+            else{
                 alert(res.message)
             }
             this.setState({showLoader: false})

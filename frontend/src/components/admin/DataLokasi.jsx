@@ -55,8 +55,7 @@ class DataLokasi extends React.Component {
             console.log(res)
             if(res.code === 20 || res.code === 21 || res.code === 22 || res.code === 23){
                 this.setState({dataTable: res.data})
-            }else if(res.code === 10){
-                console.log(res.message)
+            }else if(res.code === 10 || res.code === 30 || res.code === 50){
             }else{
                 alert(res.message)
             }
