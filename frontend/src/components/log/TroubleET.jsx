@@ -46,6 +46,8 @@ class TroubleET extends React.Component {
             if(res.data.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
+        }else{
+            alert(`${res.config?.baseURL} ${res.message}`)
         }
         this.is_mounted && this.setState({showLoader: false})
     }
@@ -317,7 +319,7 @@ class TroubleET extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: hScreen/72 }}
+                        pagination={{ pageSize: parseInt(hScreen/72) }}
                         scroll={{x: 'max-content'}}
                         size='small'
                         // searchableProps={{ fuzzySearch: true }}
