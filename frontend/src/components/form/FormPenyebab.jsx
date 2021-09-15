@@ -93,7 +93,12 @@ const FormPenyebab = ({onClose, onSubmit, visible, data}) => {
                         </Select>
                     </Form.Item>
                     <Form.Item name="no_pvm" label="Part / Device">
-                        <Select loading={loading} onFocus={handleGetPart}>
+                        <Select loading={loading} onFocus={handleGetPart}
+                            placeholder="ex: EKTP Reader" showSearch optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                         {part.map(data => (
                             <Option key={data.no_pvm}>{data.nama_perangkat}</Option>
                         ))}

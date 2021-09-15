@@ -76,7 +76,12 @@ const FormLokasi = ({onClose, onSubmit, visible, data}) => {
                         <Input placeholder="Please enter location name" />
                     </Form.Item>
                     <Form.Item name="no_projek" label="Projek">
-                        <Select loading={loading} onFocus={handleGetProjek}>
+                        <Select loading={loading} onFocus={handleGetProjek}
+                            placeholder="ex: MyGraPARI" showSearch optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                         {projek.map(data => (
                             <Option key={data.no_projek}>{data.nama_projek}</Option>
                         ))}

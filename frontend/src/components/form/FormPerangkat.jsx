@@ -80,7 +80,12 @@ const FormPerangkat = ({onClose, onSubmit, visible, data}) => {
                         <Input placeholder="Please enter device type" />
                     </Form.Item>
                     <Form.Item name="ip" label="Location">
-                        <Select loading={loading} onFocus={handleGetLokasi}>
+                        <Select loading={loading} onFocus={handleGetLokasi}
+                            placeholder="ex: Makasar" showSearch optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                         {lokasi.map(data => (
                             <Option key={data.ip}>{data.nama_stasiun}</Option>
                         ))}

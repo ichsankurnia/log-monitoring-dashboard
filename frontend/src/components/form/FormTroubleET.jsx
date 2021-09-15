@@ -323,7 +323,12 @@ class FormTroubleET extends React.Component {
                             {data?
                                 <Input readOnly />
                             :
-                                <Select loading={loading} onFocus={() => this.handleGetItem('projek')} onSelect={this.onSelectProjek}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('projek')} onSelect={this.onSelectProjek}
+                                    placeholder="ex: ASDP" showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {projek.map(data => (
                                     <Option key={data.no_projek}>{data.nama_projek}</Option>
                                 ))}
@@ -336,7 +341,12 @@ class FormTroubleET extends React.Component {
                             {data?
                                 <Input readOnly />
                             :
-                                <Select loading={loading} onFocus={() => this.handleGetItem('lokasi')}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('lokasi')}
+                                    placeholder="ex: Merak" showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {lokasi.map(data => (
                                     <Option key={data.ip}>{data.nama_stasiun}</Option>
                                 ))}
@@ -351,7 +361,12 @@ class FormTroubleET extends React.Component {
                             {data?
                                 <Input readOnly />
                             :
-                                <Select loading={loading} onFocus={() => this.handleGetItem('perangkat')}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('perangkat')}
+                                    placeholder="ex: Mainless" showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {perangkat.map(data => (
                                     <Option key={data.no_perangkat}>{data.nama_perangkat}</Option>
                                 ))}
@@ -365,7 +380,12 @@ class FormTroubleET extends React.Component {
                             {data?
                                 <Input readOnly />
                             :
-                                <Select loading={loading} onFocus={() => this.handleGetItem('part')}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('part')}
+                                    placeholder="ex: Reader" showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {part.map(data => (
                                     <Option key={data.no_pvm}>{data.nama_perangkat}</Option>
                                 ))}
@@ -384,7 +404,12 @@ class FormTroubleET extends React.Component {
                         {jenisLaporan?.toLocaleLowerCase() === 'permasalahan' &&
                         <Col span={8}>
                             <Form.Item name="no_penyebab" label="Cause">
-                                <Select loading={loading} onFocus={() => this.handleGetItem('penyebab')}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('penyebab')}
+                                    placeholder="ex: Error" showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {penyebab.map(data => (
                                     <Option key={data.no_penyebab}>{data.penyebab}</Option>
                                 ))}
@@ -395,7 +420,12 @@ class FormTroubleET extends React.Component {
                         <Col span={jenisLaporan?.toLocaleLowerCase() === 'permasalahan'? 8 : 12}>
                             <Form.Item name="solusi" label="Solution" >
                             {jenisLaporan?.toLocaleLowerCase() === 'permasalahan'?
-                                <Select loading={loading} onFocus={() => this.handleGetItem('solusi')}>
+                                <Select loading={loading} onFocus={() => this.handleGetItem('solusi')}
+                                    showSearch optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
                                 {solusi.map(data => (
                                     <Option key={data.nama_solusi}>{data.nama_solusi}</Option>
                                 ))}

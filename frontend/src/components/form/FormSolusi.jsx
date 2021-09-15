@@ -69,7 +69,12 @@ const FormSolusi = ({onClose, onSubmit, visible, data}) => {
                         <Input placeholder="Please enter the solution" />
                     </Form.Item>
                     <Form.Item name="no_penyebab" label="Cause">
-                        <Select loading={loading} onFocus={handleGetPart}>
+                        <Select loading={loading} onFocus={handleGetPart}
+                            placeholder="ex: Human Error" showSearch optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
                         {penyebab.map(data => (
                             <Option key={data.no_penyebab}>{data.penyebab}</Option>
                         ))}
