@@ -3,9 +3,9 @@
   "name": "Backend monitoring log trouble application",
   "icons": [
     {
-      "src": "logo-nutech.png",
+      "src": "ccit-logo-trans.png",
       "type": "image/png",
-      "sizes": "400x172"
+      "sizes": "500x500"
     }
   ],
   "start_url": ".",
