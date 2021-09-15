@@ -32,6 +32,7 @@ class ExportDocumentation extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showLoader: false,
+            loaderDropdown: true,
             showModalImg: false,
             
             imgSelected: null
@@ -49,6 +50,8 @@ class ExportDocumentation extends React.Component {
             if(res.data?.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
+        }else{
+            alert(`${res.config?.baseURL} ${res.message}`)
         }
         this.is_mounted && this.setState({showLoader: false})
     }
@@ -61,7 +64,6 @@ class ExportDocumentation extends React.Component {
         if(socket){
             socket.emit('request', 'projek_get')
             socket.emit('request', 'perangkat_get')
-            socket.emit('request', 'penyebab_get')
             this.handleSocketEvent()
         }else{
             this.toReconSocket = setTimeout(() => {
@@ -77,8 +79,7 @@ class ExportDocumentation extends React.Component {
                 this.setState({dataProjek: res.data})
             }else if(res.code === 30){
                 this.setState({dataPerangkat: res.data})
-            }else if(res.code === 50){
-                this.setState({dataPenyebab: res.data})
+                this.setState({loaderDropdown: false})
             }else{
                 alert(res.message)
             }
@@ -148,7 +149,7 @@ class ExportDocumentation extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showLoader, dataProjek, dataPerangkat } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showLoader, loaderDropdown, dataProjek, dataPerangkat } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};                                                                                          // eslint-disable-line no-unused-vars
 
@@ -250,22 +251,34 @@ class ExportDocumentation extends React.Component {
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1 className='txt-white'>Documentation Trouble ET</h1>
                     <div className='row-sp'>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Tanggal Done </label>
                             <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Projek </label>
-                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}
+                                loading={loaderDropdown}
+                                placeholder="ex: KCI" showSearch optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataProjek?.map(data => 
                                     <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
                                 )}
                             </Select>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Perangkat </label>
-                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}
+                                loading={loaderDropdown}
+                                placeholder="ex: Gate" showSearch optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataPerangkat?.map(data => 
                                     <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
@@ -278,7 +291,7 @@ class ExportDocumentation extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: hScreen/256 }}
+                        pagination={{ pageSize: parseInt(hScreen/256) }}
                         scroll={{x: 'max-content', y: hScreen> 768? 650 : 370}}
                         size='small'
                     />

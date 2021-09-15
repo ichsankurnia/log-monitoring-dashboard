@@ -33,6 +33,7 @@ class ExportData extends React.Component {
             filteredInfo: null,
             sortedInfo: null,
             showLoader: false,
+            loaderDropdown: true
         }
 
         this.is_mounted = false
@@ -47,6 +48,8 @@ class ExportData extends React.Component {
             if(res.data.code === 0 && this.is_mounted){
                 this.setState({allData: res.data.data, dataTable: res.data.data})
             }
+        }else{
+            alert(`${res.config?.baseURL} ${res.message}`)
         }
         this.is_mounted && this.setState({showLoader: false})
     }
@@ -57,6 +60,7 @@ class ExportData extends React.Component {
 
         socket = this.context
         if(socket){
+            this.setState({loaderDropdown: true})
             socket.emit('request', 'projek_get')
             socket.emit('request', 'perangkat_get')
             socket.emit('request', 'penyebab_get')
@@ -75,6 +79,7 @@ class ExportData extends React.Component {
                 this.setState({dataProjek: res.data})
             }else if(res.code === 30){
                 this.setState({dataPerangkat: res.data})
+                this.setState({loaderDropdown: false})
             }else if(res.code === 50){
                 this.setState({dataPenyebab: res.data})
             }else{
@@ -142,7 +147,7 @@ class ExportData extends React.Component {
     }
 
     render(){
-        let { dataTable, filteredInfo, sortedInfo, showLoader, dataProjek, dataPenyebab, dataPerangkat } = this.state
+        let { dataTable, filteredInfo, sortedInfo, showLoader, loaderDropdown, dataProjek, dataPenyebab, dataPerangkat } = this.state
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
 
@@ -265,11 +270,11 @@ class ExportData extends React.Component {
                 <Spin spinning={showLoader} delay={500} indicator={loader} tip="Please wait..." size='large'>
                     <h1 className='txt-white'>Export Data Trouble ET</h1>
                     <div className='row-sp'>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Filter By Tanggal Done </label>
                             <DatePicker.RangePicker onCalendarChange={(date) => this.filterByTanggalDone(date, 'tanggal_done')} />
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Jenis Laporan </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "jenislaporan")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
@@ -278,34 +283,52 @@ class ExportData extends React.Component {
                                 <Select.Option key="PERMASALAHAN">Permasalahan</Select.Option>
                             </Select>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Projek </label>
-                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_projek")}>
+                            <Select style={{width: 130}}
+                                loading={loaderDropdown}
+                                onSelect={(value) => this.filterByItem(value, "no_projek")} placeholder="ex: KCI" showSearch optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataProjek?.map(data => 
                                     <Select.Option key={data.no_projek}>{data.nama_projek}</Select.Option>
                                 )}
                             </Select>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Perangkat </label>
-                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_perangkat")}>
+                            <Select style={{width: 130}} 
+                                loading={loaderDropdown}
+                                onSelect={(value) => this.filterByItem(value, "no_perangkat")} placeholder="ex: Gate" showSearch optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataPerangkat?.map(data => 
                                     <Select.Option key={data.no_perangkat}>{data.nama_perangkat}</Select.Option>
                                 )}
                             </Select>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Penyebab </label>
-                            <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "no_penyebab")}>
+                            <Select style={{width: 250}} 
+                                loading={loaderDropdown}
+                                onSelect={(value) => this.filterByItem(value, "no_penyebab")} placeholder="ex: Koneksi" showSearch optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
                                 <Select.Option key={null}>- ALL</Select.Option>
                                 {dataPenyebab?.map(data => 
                                     <Select.Option key={data.no_penyebab}>{data.penyebab}</Select.Option>
                                 )}
                             </Select>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             <label className='txt-white'>Status </label>
                             <Select style={{width: 130}} onSelect={(value) => this.filterByItem(value, "status")}>
                                 <Select.Option key={null}>- ALL</Select.Option>
@@ -320,7 +343,7 @@ class ExportData extends React.Component {
                         columns={columns}
                         dataSource={dataTable}
                         onChange={this.handleChange}
-                        pagination={{ pageSize: hScreen/72 }}
+                        pagination={{ pageSize: parseInt(hScreen/72) }}
                         scroll={{x: 'max-content'}}
                         size='small'
                     />
