@@ -80,6 +80,7 @@ class ExportDocumentation extends React.Component {
             }else if(res.code === 30){
                 this.setState({dataPerangkat: res.data})
                 this.setState({loaderDropdown: false})
+            }else if(res.code === 20 || res.code === 40 || res.code === 50 || res.code === 60){
             }else{
                 alert(res.message)
             }

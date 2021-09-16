@@ -82,6 +82,7 @@ class ExportData extends React.Component {
                 this.setState({loaderDropdown: false})
             }else if(res.code === 50){
                 this.setState({dataPenyebab: res.data})
+            }else if(res.code === 20 || res.code === 40 || res.code === 60){
             }else{
                 alert(res.message)
             }
