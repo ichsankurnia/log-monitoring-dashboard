@@ -375,7 +375,9 @@ class FormTroubleET extends React.Component {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                        {jenisLaporan?.toLocaleLowerCase() === 'permasalahan' &&
+                        {jenisLaporan?.toLocaleLowerCase() === 'aduan'?
+                            null
+                            :
                             <Form.Item name="no_pvm" label="Part" >
                             {data?
                                 <Input readOnly />
