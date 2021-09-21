@@ -162,6 +162,59 @@ class TroubleETController {
             return response(478, error.message, null)
         }
     }
+
+    static getGrafik = async (req, res) => {
+        try {
+            const masalah = await TroubleET.grafikMasalah()
+            if(masalah){
+                const projek = await TroubleET.grafikProjek()
+                if(projek){
+                    const perangkat = await TroubleET.grafikPerangkat()
+                    if(perangkat) {
+                        let part = await TroubleET.grafikPart()
+                        if(part){
+                            part = part.filter(data => data.no_pvm !== null)
+                            let penyebab = await TroubleET.grafikPenyebab()
+                            if(penyebab){
+                                penyebab = penyebab.filter(data => data.no_penyebab !== null)
+                                const data = { 
+                                    masalah, projek, perangkat, part, penyebab
+                                }
+                                return res.json(response(0, 'success get grafik', data))
+                            }else{
+                                return res.json(response(579, 'fail get grafik penyebab', null))
+                            }
+                        }else{
+                            return res.json(response(579, 'fail get grafik part', null))
+                        }
+                    }else{
+                        return res.json(response(579, 'fail get grafik perangkat', null))
+                    }
+                }else{
+                    return res.json(response(579, 'fail get grafik projek', null))
+                }
+            }else{
+                return res.json(response(579, 'fail get grafik masalah', null))
+            }
+        } catch (error) {
+            return res.json(response(479, error.message, null))
+        }
+    }
+
+    static getDetailGrafik = async (req, res) => {
+        try {
+            const {query} = req.params
+            const data = await TroubleET.detailGrafik(query)
+            
+            if(data){
+                return res.json(response(0, 'success get detail grafik', data))
+            }else{
+                return res.json(response(580, 'fail get detail grafik', null))
+            }
+        } catch (error) {
+            return res.json(response(480, error.message, null))
+        }
+    }
 }
 
 
