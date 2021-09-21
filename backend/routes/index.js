@@ -38,5 +38,7 @@ router.post('/troubleet', TroubleETController.addTrouble)
 router.patch('/troubleet/:ticket_id', TroubleETController.editTrouble)
 router.delete('/troubleet/:ticket_id', TroubleETController.deleteTrouble)
 router.get('/troubleet-documentation', TroubleETController.getListDocumentation)
+router.get('/troubleet-grafik', TroubleETController.getGrafik)
+router.get('/troubleet-grafik-detail/:query', TroubleETController.getDetailGrafik)
 
 module.exports = router
