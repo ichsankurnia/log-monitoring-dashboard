@@ -67,6 +67,11 @@ app.get('/', (req, res) => {
     })
 })
 app.use('/api/', route)
+/** Not found handler */
+/** The 404 Route (ALWAYS Keep this as the last route) */
+app.get('*', function(req, res){
+    res.status(404).json({code: 99, message: 'URL Not Found', data: null});
+});
 //#endregion
 
 
