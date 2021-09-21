@@ -263,6 +263,142 @@ class TroubleET {
             return false
         }
     }
+
+    static grafikMasalah = async () => {
+        const sql = `
+            select 
+                (
+                    select count(*) from ${tableName} where tanggal_done=current_date and status='Done'
+                ) as masalah_selesai_hari_ini,
+                (
+                    select count(*) from ${tableName} where tanggal_done=current_date and status='Open' or status ='Pending'
+                ) as masalah_belum_selesai_hari_ini,
+                (
+                    select count(*) from ${tableName} where status = 'Done'
+                ) as total_masalah_selesai,
+                (
+                    select count(*) from ${tableName} where status = 'Open' or status ='Pending'
+                ) as total_masalah_belum_selesai
+        `
+
+        try {
+            const result = await db.query(sql)         
+            return result.rows[0]
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    static grafikProjek = async () => {
+        const sql = `
+            select count(*) counts, te.no_projek, pro.nama_projek 
+            from ${tableName} te
+            left join projek pro on pro.no_projek = te.no_projek 
+            group by (te.no_projek, pro.nama_projek)
+            order by counts desc limit 10
+        `
+
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    static grafikPerangkat = async () => {
+        const sql = `
+            select count(*) counts, te.no_perangkat, per.nama_perangkat, loc.nama_stasiun, pro.nama_projek
+            from ${tableName} te
+            left join et per on per.no_perangkat = te.no_perangkat 
+            left join stasiun loc on loc.ip = te.ip
+            left join projek pro on pro.no_projek = te.no_projek 
+            group by (te.no_perangkat, per.nama_perangkat, te.ip, loc.nama_stasiun, te.no_projek, pro.nama_projek)
+            order by counts desc limit 10
+        `
+
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    static grafikPart = async () => {
+        const sql = `
+            select count(*) counts, te.no_pvm, part.nama_perangkat as nama_part
+            from trouble_et te
+            left join perangkat_vm part on part.no_pvm= te.no_pvm 
+            group by (te.no_pvm, nama_part)
+            order by counts desc limit 10
+        `
+
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    static grafikPenyebab = async () => {
+        const sql = `
+            select count(*) counts, te.no_penyebab, p2.penyebab
+            from trouble_et te
+            left join penyebab p2 on p2.no_penyebab = te.no_penyebab 
+            group by (te.no_penyebab, p2.penyebab)
+            order by counts desc limit 10
+        `
+
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+    
+    static detailGrafik = async (query) => {
+        const sql = `
+        SELECT 
+            no, tanggal_masalah, jam_masalah, tanggal_done, jam_done, jenislaporan, 
+            PROJ.no_projek, PROJ.nama_projek, 
+            LOK.ip, LOK.nama_stasiun, 
+            PER.no_perangkat, PER.nama_perangkat, 
+            PART.no_pvm, PART.nama_perangkat as nama_part,
+            problem, PEN.no_penyebab, PEN.penyebab,
+            solusi, status, no_user, sumber, refnumber, refnotrouble, teknisi, totaldowntime, arah_gate
+        FROM ${tableName} 
+        LEFT JOIN public.projek as PROJ
+        ON PROJ.no_projek = ${tableName}.no_projek
+        LEFT JOIN public.stasiun as LOK
+        ON LOK.ip = ${tableName}.ip
+        LEFT JOIN public.et as PER
+        ON PER.no_perangkat = ${tableName}.no_perangkat
+        LEFT JOIN public.perangkat_vm as PART
+        ON PART.no_pvm = ${tableName}.no_pvm
+        LEFT JOIN public.penyebab as PEN
+        ON PEN.no_penyebab = ${tableName}.no_penyebab 
+        WHERE ${query}
+        ORDER BY tanggal_done desc
+        `
+        
+        console.log(sql)
+        
+        try {
+            const result = await db.query(sql)
+            return result.rows
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
 }
 
 
