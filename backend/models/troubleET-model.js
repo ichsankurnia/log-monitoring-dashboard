@@ -292,10 +292,10 @@ class TroubleET {
 
     static grafikProjek = async () => {
         const sql = `
-            select count(*) counts, te.no_projek, pro.nama_projek 
+            select count(*) counts, te.no_projek, pro.nama_projek, pro.initial 
             from ${tableName} te
             left join projek pro on pro.no_projek = te.no_projek 
-            group by (te.no_projek, pro.nama_projek)
+            group by (te.no_projek, pro.nama_projek, pro.initial)
             order by counts desc limit 10
         `
 
@@ -331,7 +331,7 @@ class TroubleET {
     static grafikPart = async () => {
         const sql = `
             select count(*) counts, te.no_pvm, part.nama_perangkat as nama_part
-            from trouble_et te
+            from ${tableName} te
             left join perangkat_vm part on part.no_pvm= te.no_pvm 
             group by (te.no_pvm, nama_part)
             order by counts desc limit 10
@@ -349,7 +349,7 @@ class TroubleET {
     static grafikPenyebab = async () => {
         const sql = `
             select count(*) counts, te.no_penyebab, p2.penyebab
-            from trouble_et te
+            from ${tableName} te
             left join penyebab p2 on p2.no_penyebab = te.no_penyebab 
             group by (te.no_penyebab, p2.penyebab)
             order by counts desc limit 10
@@ -388,8 +388,6 @@ class TroubleET {
         WHERE ${query}
         ORDER BY tanggal_done desc
         `
-        
-        console.log(sql)
         
         try {
             const result = await db.query(sql)
