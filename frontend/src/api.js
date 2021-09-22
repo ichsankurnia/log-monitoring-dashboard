@@ -106,4 +106,25 @@ export const getListDocumentation = async () => {
 }
 
 
+export const getGrafik = async () => {
+    try {
+        const data = await api.get('/api/troubleet-grafik')
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))
+    }
+}
+
+export const getDetailGrafik = async (query) => {
+    try {
+        const data = await api.get(`/api/troubleet-grafik-detail/${query}`)
+        return data
+    } catch (error) {
+        if(error.response) return error.response
+        else return JSON.parse(JSON.stringify(error))
+    }
+}
+
+
 export default api
