@@ -11,6 +11,7 @@ import NoMatch404 from "./components/NoMatch404";
 import TroubleET from "./components/log/TroubleET";
 import ExportDocumentation from "./components/export/ExportDocumenation";
 import ExportData from "./components/export/ExportData";
+import LogGrafik from "./components/log/LogGrafik";
 
 const routes = [
     {
@@ -62,6 +63,11 @@ const routes = [
         path : "/data-log",
         layout: '/admin',
         component: TroubleET
+    },
+    {
+        path : "/chart",
+        layout: '/admin',
+        component: LogGrafik
     },
     {
         path : "/export/documentation",

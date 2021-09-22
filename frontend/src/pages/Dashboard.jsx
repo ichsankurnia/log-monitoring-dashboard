@@ -12,6 +12,7 @@ import ExportOutlined from '@ant-design/icons/ExportOutlined';
 import VideoCameraTwoTone from '@ant-design/icons/VideoCameraTwoTone';
 import AppstoreFilled from '@ant-design/icons/AppstoreFilled';
 import TableOutlined from '@ant-design/icons/TableOutlined';
+import AreaChartOutlined from '@ant-design/icons/AreaChartOutlined'
 
 
 import routes from '../routes';
@@ -113,6 +114,9 @@ const Dashboard = ({setUserData, setTimeNow}) => {
             <div className='dash-footer'>
                 <Link to='/admin/menu'>
                     <AppstoreFilled className="ic-footer"/>
+                </Link>
+                <Link to="/admin/chart">
+                    <AreaChartOutlined className='ic-footer' />
                 </Link>
                 <Link to="/admin/data-log">
                     <TableOutlined className='ic-footer' />
